@@ -12,6 +12,7 @@ public class Player : MonoBehaviour {
     SimpleGestureListener sgl;
     float hitDistance = 2;
     float jumpForce = 150;
+    Vector3 startPosition;
     
     // Use this for initialization
     void Start () {		
@@ -20,6 +21,7 @@ public class Player : MonoBehaviour {
         sgl = GameObject.Find("Main Camera").GetComponent<SimpleGestureListener>();
         UI.UpdateText(0, "Score: " + score);
         UI.UpdateText(1, "Lives: " + lives);
+        startPosition = transform.position;
     }
 
     void OnCollisionEnter(Collision collision)
@@ -37,12 +39,18 @@ public class Player : MonoBehaviour {
     }
 
     void IncrementScore(float f) {
-        score += f;
+        score = f;
         UI.UpdateText(0, "Score: " + Mathf.Round(score));
     }
 		
 	// Update is called once per frame
 	void Update () {
+        /*
+        Vector3 offset = new Vector3(0, 1.4f, 0);
+        Vector3 origin = transform.position + offset;
+        Vector3 direction = transform.TransformDirection(Vector3.forward);
+        Debug.DrawRay(origin, direction * hitDistance, Color.yellow);
+        */
         if (lives > 0 && canMove)
         {
             
@@ -50,7 +58,7 @@ public class Player : MonoBehaviour {
             {
                 r.AddRelativeForce(Vector3.forward * speed);
             }
-            IncrementScore(Time.deltaTime*10);
+            IncrementScore(Vector3.Distance(transform.position,startPosition));
         }
         else {
             speed = 0;
@@ -64,8 +72,7 @@ public class Player : MonoBehaviour {
         Vector3 offset = new Vector3(0, 1.4f, 0);
         Vector3 origin = transform.position + offset;
         Vector3 direction = transform.TransformDirection(Vector3.forward);
-        Debug.DrawRay(origin, direction * hitDistance, Color.yellow);
-
+        
         if (Physics.Raycast(origin, direction, out hit, hitDistance))
         {
             if (hit.transform.tag == "Enemy")

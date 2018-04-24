@@ -1585,6 +1585,7 @@ public class KinectManager : MonoBehaviour
 					foreach(KinectGestures.GestureListenerInterface listener in gestureListeners)
 					{
 						listener.UserDetected(UserId, 1);
+                        
 					}
 					
 					// reset skeleton filters
@@ -1600,8 +1601,8 @@ public class KinectManager : MonoBehaviour
 		if(AllPlayersCalibrated)
 		{
 			Debug.Log("All players calibrated.");
-			
-			if(CalibrationText != null)
+
+            if (CalibrationText != null)
 			{
 				CalibrationText.GetComponent<GUIText>().text = "";
 			}

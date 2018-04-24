@@ -1,39 +1,13 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System;
 
 public class GestureListener : MonoBehaviour, KinectGestures.GestureListenerInterface
 {
 	// GUI Text to display the gesture messages.
-	public GUIText GestureInfo;
-	
-	private bool swipeLeft;
-	private bool swipeRight;
+	public Text GestureInfo;
 
-	
-	public bool IsSwipeLeft()
-	{
-		if(swipeLeft)
-		{
-			swipeLeft = false;
-			return true;
-		}
-		
-		return false;
-	}
-	
-	public bool IsSwipeRight()
-	{
-		if(swipeRight)
-		{
-			swipeRight = false;
-			return true;
-		}
-		
-		return false;
-	}
-
-	
 	public void UserDetected(uint userId, int userIndex)
 	{
 		// detect these user specific gestures
@@ -66,17 +40,24 @@ public class GestureListener : MonoBehaviour, KinectGestures.GestureListenerInte
 	                              KinectWrapper.NuiSkeletonPositionIndex joint, Vector3 screenPos)
 	{
 		string sGestureText = gesture + " detected";
-		if(GestureInfo != null)
+        Debug.Log(sGestureText);
+
+        if (GestureInfo != null)
 		{
 			GestureInfo.GetComponent<GUIText>().text = sGestureText;
 		}
-		
-		if(gesture == KinectGestures.Gestures.SwipeLeft)
-			swipeLeft = true;
-		else if(gesture == KinectGestures.Gestures.SwipeRight)
-			swipeRight = true;
 
-		return true;
+        if (gesture == KinectGestures.Gestures.SwipeLeft || gesture == KinectGestures.Gestures.SwipeRight)
+        {
+            GameObject.Find("Player").GetComponent<Player>().Swipe();
+        }
+        
+        if (gesture == KinectGestures.Gestures.Jump)
+        {
+            GameObject.Find("Player").GetComponent<Player>().Jump();
+        }
+
+        return true;
 	}
 
 	public bool GestureCancelled (uint userId, int userIndex, KinectGestures.Gestures gesture, 
