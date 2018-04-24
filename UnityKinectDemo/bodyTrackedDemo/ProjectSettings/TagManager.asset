@@ -7,6 +7,8 @@ TagManager:
   - Wall
   - Character
   - Enemy
+  - Coin
+  - Wall_Hole
   layers:
   - Default
   - TransparentFX

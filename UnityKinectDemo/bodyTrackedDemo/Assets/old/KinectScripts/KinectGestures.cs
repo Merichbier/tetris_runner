@@ -53,7 +53,8 @@ public class KinectGestures
 		Jump,
 		Squat,
 		Push,
-		Pull
+		Pull,
+        Custom1
 	}
 	
 	
@@ -1103,8 +1104,20 @@ public class KinectGestures
 				}
 				break;
 
-			// here come more gesture-cases
-		}
+            // check for Custom1
+            case Gestures.Custom1:
+                switch (gestureData.state)
+                {
+                    case 0:  // gesture detection
+                        break;
+
+                    case 1:  // gesture complete
+                        break;
+                }
+                break;
+
+                // here come more gesture-cases
+        }
 	}
 
 }

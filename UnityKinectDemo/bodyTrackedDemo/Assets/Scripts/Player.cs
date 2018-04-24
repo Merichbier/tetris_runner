@@ -13,7 +13,9 @@ public class Player : MonoBehaviour {
     float hitDistance = 2;
     float jumpForce = 150;
     Vector3 startPosition;
-    
+    KinectManager kinectManager;
+    float wallPoints = 10;
+
     // Use this for initialization
     void Start () {		
 		r = GetComponent<Rigidbody> ();
@@ -22,6 +24,7 @@ public class Player : MonoBehaviour {
         UI.UpdateText(0, "Score: " + score);
         UI.UpdateText(1, "Lives: " + lives);
         startPosition = transform.position;
+        kinectManager = GameObject.Find("Main Camera").GetComponent<KinectManager>();
     }
 
     void OnCollisionEnter(Collision collision)
@@ -30,7 +33,26 @@ public class Player : MonoBehaviour {
 			Destroy (collision.gameObject);
             RemoveLife();
         }
-	}
+        if (collision.gameObject.tag == "Coin")
+        {
+            UpdateScore(collision.gameObject.GetComponent<Coin>().GetPoints(),true);
+            Destroy(collision.gameObject);            
+        }
+        if (collision.gameObject.tag == "Wall_Hole")
+        {
+            UpdateScore(wallPoints, true);
+            Destroy(collision.gameObject);
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Wall_Hole")
+        {
+            UpdateScore(wallPoints, true);
+            Destroy(other.gameObject);
+        }
+    }
 
     void RemoveLife()
     {
@@ -38,27 +60,35 @@ public class Player : MonoBehaviour {
         UI.UpdateText(1, "Lives: " + lives);
     }
 
-    void IncrementScore(float f) {
-        score = f;
+    void UpdateScore(float f,bool increment) {
+        if (increment)
+        {
+            score += f;
+        }
+        else
+        {
+            score = f;
+        }        
         UI.UpdateText(0, "Score: " + Mathf.Round(score));
     }
-		
-	// Update is called once per frame
-	void Update () {
-        /*
+
+    /*
         Vector3 offset = new Vector3(0, 1.4f, 0);
         Vector3 origin = transform.position + offset;
         Vector3 direction = transform.TransformDirection(Vector3.forward);
         Debug.DrawRay(origin, direction * hitDistance, Color.yellow);
         */
-        if (lives > 0 && canMove)
+
+    // Update is called once per frame
+    void Update () {
+        if (lives > 0 && canMove)// && kinectManager.IsUserDetected())
         {
             
             if (r.velocity.z < maxSpeed)
             {
                 r.AddRelativeForce(Vector3.forward * speed);
             }
-            IncrementScore(Vector3.Distance(transform.position,startPosition));
+            UpdateScore(Vector3.Distance(transform.position,startPosition),false);
         }
         else {
             speed = 0;
