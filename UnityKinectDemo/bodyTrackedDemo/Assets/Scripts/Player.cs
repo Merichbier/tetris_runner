@@ -8,16 +8,18 @@ public class Player : MonoBehaviour {
 	float speed=8;
 	Rigidbody r;
     float maxSpeed = 10;
-
-	// Use this for initialization
-	void Start () {		
+    public bool canMove;
+    SimpleGestureListener sgl;
+    float hitDistance = 2;
+    float jumpForce = 150;
+    
+    // Use this for initialization
+    void Start () {		
 		r = GetComponent<Rigidbody> ();
 		r.AddForce(new Vector3(0,0,speed));
+        sgl = GameObject.Find("Main Camera").GetComponent<SimpleGestureListener>();
         UI.UpdateText(0, "Score: " + score);
         UI.UpdateText(1, "Lives: " + lives);
-        // r.freezeRotation = true;
-        
-
     }
 
     void OnCollisionEnter(Collision collision)
@@ -41,9 +43,9 @@ public class Player : MonoBehaviour {
 		
 	// Update is called once per frame
 	void Update () {
-        if (lives > 0)
+        if (lives > 0 && canMove)
         {
-            Debug.Log(r.velocity.z);
+            
             if (r.velocity.z < maxSpeed)
             {
                 r.AddRelativeForce(Vector3.forward * speed);
@@ -55,7 +57,27 @@ public class Player : MonoBehaviour {
         }
 	}
 
+     public void Swipe()
+    {
+        
+        RaycastHit hit;
+        Vector3 offset = new Vector3(0, 1.4f, 0);
+        Vector3 origin = transform.position + offset;
+        Vector3 direction = transform.TransformDirection(Vector3.forward);
+        Debug.DrawRay(origin, direction * hitDistance, Color.yellow);
 
+        if (Physics.Raycast(origin, direction, out hit, hitDistance))
+        {
+            if (hit.transform.tag == "Enemy")
+            {
+                Destroy(hit.transform.gameObject);
+            }
+        }
+    }
 
+    public void Jump()
+    {
+        r.AddForce(Vector3.up * jumpForce);
+    }
 
 }
