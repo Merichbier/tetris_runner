@@ -5,7 +5,7 @@ public class Player : MonoBehaviour {
 
 	int lives=3;
     float score;
-	float speed=8;
+	float speed=20;
 	Rigidbody r;
     float maxSpeed = 10;
     public bool canMove;
