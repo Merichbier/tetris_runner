@@ -16,6 +16,7 @@ public class CoinSpawner : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        GameObject coinParent = new GameObject("Coins");
         for (int i = 0; i < numCoins; i++)
         {
             float x = 0;
@@ -24,6 +25,7 @@ public class CoinSpawner : MonoBehaviour {
             }
             GameObject coin = GameObject.Instantiate(Resources.Load("Coin")) as GameObject;
             coin.transform.position = new Vector3(x, yOffset, i * coinSpacing);
+            coin.transform.parent = coinParent.transform;
         }
     }
 	

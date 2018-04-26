@@ -2211,6 +2211,17 @@ public class KinectManager : MonoBehaviour
 		return false;
 	}
 	
+    //Extra methods by us
+
+    public bool[] GetPlayer1_JointsTracked()
+    {
+        return player1JointsTracked;
+    }
+
+    public Vector3[] GetPlayer1_Pos()
+    {
+        return player1JointsPos;
+    }
 }
 
 

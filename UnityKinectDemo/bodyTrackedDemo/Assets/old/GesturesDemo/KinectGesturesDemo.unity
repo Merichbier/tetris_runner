@@ -251,7 +251,7 @@ Prefab:
     - target: {fileID: 114449197568143862, guid: f9314e691e1710a41b231d9d30cd548b,
         type: 2}
       propertyPath: SensorAngle
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f9314e691e1710a41b231d9d30cd548b, type: 2}
