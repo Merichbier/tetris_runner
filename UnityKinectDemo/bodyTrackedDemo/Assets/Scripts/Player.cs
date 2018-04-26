@@ -16,6 +16,9 @@ public class Player : MonoBehaviour {
     KinectManager kinectManager;
     float wallPoints = 10;
 
+    bool furyModeReady;
+    bool inFuryMode;
+
     // Use this for initialization
     void Start () {		
 		r = GetComponent<Rigidbody> ();
@@ -115,6 +118,19 @@ public class Player : MonoBehaviour {
     public void Jump()
     {
         r.AddForce(Vector3.up * jumpForce);
+    }
+
+    public void EnterFuryMode()
+    {
+        if (furyModeReady) { 
+            inFuryMode = true;
+            furyModeReady = false;
+        }
+    }
+
+    public void Punch()
+    {
+        Debug.Log("Punched");
     }
 
 }
