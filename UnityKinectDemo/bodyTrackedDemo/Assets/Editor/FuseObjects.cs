@@ -6,20 +6,16 @@ using Parabox.CSG;
 
 public class FuseObjects : MonoBehaviour{
 
-    [MenuItem("Custom/Fuse Objects")]
-    static void LogSelectedTransformName()
+    [MenuItem("Custom/Subtract")]
+    static void Subtract()
     {
         Transform[] obj = Selection.activeTransform.GetComponentsInChildren<Transform>();
 
         GameObject g1 = obj[1].gameObject;
         GameObject g2 = obj[2].gameObject;
 
-        Boolean(g1, g2);
-    }    
-
-    static void Boolean(GameObject g1,GameObject g2)
-    {
         Mesh m = CSG.Subtract(g1, g2);
+
         GameObject composite = new GameObject();
 
         composite.AddComponent<MeshFilter>().sharedMesh = m;
@@ -29,8 +25,8 @@ public class FuseObjects : MonoBehaviour{
 
         //GameObject.Destroy(g1);
         //GameObject.Destroy(g2);
-        
-        string saveName = "Object_"+Random.Range(0,10000000);
+
+        string saveName = "Object_" + Random.Range(0, 10000000);
         var mf = composite.GetComponent<MeshFilter>();
         if (mf)
         {
@@ -41,6 +37,48 @@ public class FuseObjects : MonoBehaviour{
         }
         composite.transform.position += new Vector3(0, 0, -3);
     }
+
+    [MenuItem("Custom/Union")]
+    static void Union()
+    {
+        Transform[] obj = Selection.activeTransform.GetComponentsInChildren<Transform>();
+
+        GameObject[] g = new GameObject[obj.Length-1];
+        for (int i = 0;i< obj.Length-1;i++) {
+            g[i] = obj[i+1].gameObject;
+        }
+
+        Mesh m = CSG.Union(g[0], g[1]);
+        GameObject composite = new GameObject();
+        composite.AddComponent<MeshFilter>().sharedMesh = m;
+        composite.AddComponent<MeshRenderer>().sharedMaterial = g[1].GetComponent<MeshRenderer>().sharedMaterial;
+        GenerateBarycentric(composite);
+        Debug.Log("Did 0,1");
+
+        for (int i = 2; i < obj.Length-2; i++)
+        {
+            Debug.Log("I=" + i);
+            m = CSG.Union(g[i], composite);
+            composite.GetComponent<MeshFilter>().sharedMesh = m;
+            //composite.AddComponent<MeshRenderer>().sharedMaterial = g[1].GetComponent<MeshRenderer>().sharedMaterial;
+            GenerateBarycentric(composite);
+        }
+        Debug.Log("Mesh fused");
+        string saveName = "Object_" + Random.Range(0, 10000000);
+        var mf = composite.GetComponent<MeshFilter>();
+        if (mf)
+        {
+            var savePath = "Assets/Meshes" + saveName + ".asset";
+            Debug.Log("Saved Mesh to:" + savePath);
+            //            AssetDatabase.CreateAsset(mf.mesh, savePath);
+            AssetDatabase.CreateAsset(mf.sharedMesh, savePath);
+        }
+        composite.transform.position += new Vector3(0, 0, -3);
+
+        Debug.Log("Created union");
+    }
+
+
 
     static void GenerateBarycentric(GameObject go)
     {
