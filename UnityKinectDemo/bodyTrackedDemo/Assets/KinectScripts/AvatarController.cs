@@ -404,7 +404,7 @@ public class AvatarController : MonoBehaviour
 	// the author of the terrific idea for kinect-joints to mecanim-bones mapping
 	// along with its initial implementation, including following dictionary is
 	// Mikhail Korchun (korchoon@gmail.com). Big thanks to this guy!
-	private readonly Dictionary<int, HumanBodyBones> boneIndex2MecanimMap = new Dictionary<int, HumanBodyBones>
+	public static readonly Dictionary<int, HumanBodyBones> boneIndex2MecanimMap = new Dictionary<int, HumanBodyBones>
 	{
 		{0, HumanBodyBones.Hips},
 		{1, HumanBodyBones.Spine},

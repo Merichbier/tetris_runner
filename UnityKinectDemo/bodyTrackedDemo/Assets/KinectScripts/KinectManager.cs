@@ -187,6 +187,13 @@ public class KinectManager : MonoBehaviour
 	private SelfIntersectionConstraint selfIntersectionConstraint;
 	
 	
+    public uint Player1
+    {
+        get {
+            return Player1ID;
+        }
+    }
+
 	// returns the single KinectManager instance
     public static KinectManager Instance
     {
