@@ -1,32 +1,36 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Player : MonoBehaviour {
+public class Player : MonoBehaviour
+{
 
-	int lives=3;
+    int lives = 3;
     float score;
-	float speed=8;
-	Rigidbody r;
+    float speed = 8;
+    Rigidbody r;
     float maxSpeed = 10;
 
-	// Use this for initialization
-	void Start () {		
-		r = GetComponent<Rigidbody> ();
-		r.AddForce(new Vector3(0,0,speed));
+    // Use this for initialization
+    void Start()
+    {
+        r = GetComponent<Rigidbody>();
+        r.AddForce(new Vector3(0, 0, speed));
         UI.UpdateText(0, "Score: " + score);
         UI.UpdateText(1, "Lives: " + lives);
+        UI.UpdateText(2, "Scene: " + Application.loadedLevel);
         // r.freezeRotation = true;
-        
+
 
     }
 
     void OnCollisionEnter(Collision collision)
-	{
-		if (collision.gameObject.tag == "Wall") {
-			Destroy (collision.gameObject);
+    {
+        if (collision.gameObject.tag == "Wall")
+        {
+            Destroy(collision.gameObject);
             RemoveLife();
         }
-	}
+    }
 
     void RemoveLife()
     {
@@ -34,13 +38,15 @@ public class Player : MonoBehaviour {
         UI.UpdateText(1, "Lives: " + lives);
     }
 
-    void IncrementScore(float f) {
+    void IncrementScore(float f)
+    {
         score += f;
         UI.UpdateText(0, "Score: " + Mathf.Round(score));
     }
-		
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
         if (lives > 0)
         {
             Debug.Log(r.velocity.z);
@@ -48,12 +54,13 @@ public class Player : MonoBehaviour {
             {
                 r.AddRelativeForce(Vector3.forward * speed);
             }
-            IncrementScore(Time.deltaTime*10);
+            IncrementScore(Time.deltaTime * 10);
         }
-        else {
+        else
+        {
             speed = 0;
         }
-	}
+    }
 
 
 

@@ -43,7 +43,7 @@ public class PlaneManager : MonoBehaviour
         GameObject go;
         go = Instantiate(groundPrefabs[0]) as GameObject;
         go.transform.SetParent(transform);
-        go.transform.position = Vector3.forward * spawnZ;
+        go.transform.position = characterTransform.forward * spawnZ;
         spawnZ += groundLength;
         activeGrounds.Add(go);
     }
