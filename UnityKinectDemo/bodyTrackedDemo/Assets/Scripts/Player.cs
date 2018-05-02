@@ -3,12 +3,13 @@ using System.Collections;
 
 public class Player : MonoBehaviour {
 
-	int lives=3;
+	int lives=1;
     float score;
 	float speed=20;
 	Rigidbody r;
-    float maxSpeed = 10;
+    float maxSpeed =7;
     public bool canMove;
+    public bool demo;
     SimpleGestureListener sgl;
     float hitDistance = 2;
     float jumpForce = 150;
@@ -36,16 +37,13 @@ public class Player : MonoBehaviour {
 			Destroy (collision.gameObject);
             RemoveLife();
         }
-        if (collision.gameObject.tag == "Coin")
-        {
-            UpdateScore(collision.gameObject.GetComponent<Coin>().GetPoints(),true);
-            Destroy(collision.gameObject);            
-        }
+        /*
         if (collision.gameObject.tag == "Wall_Hole")
         {
             UpdateScore(wallPoints, true);
             Destroy(collision.gameObject);
         }
+        */
     }
 
     void OnTriggerEnter(Collider other)
@@ -53,6 +51,11 @@ public class Player : MonoBehaviour {
         if (other.gameObject.tag == "Wall_Hole")
         {
             UpdateScore(wallPoints, true);
+            Destroy(other.gameObject);
+        }
+        if (other.gameObject.tag == "Coin")
+        {
+            UpdateScore(other.gameObject.GetComponent<Coin>().GetPoints(), true);
             Destroy(other.gameObject);
         }
     }
@@ -92,11 +95,15 @@ public class Player : MonoBehaviour {
                 r.AddRelativeForce(Vector3.forward * speed);
             }
             UpdateScore(Vector3.Distance(transform.position,startPosition),false);
+            
         }
-        else {
+        else { 
             speed = 0;
+            UI.UpdateText(3, "GAME OVER !");
         }
-	}
+
+        UI.UpdateText(2, "Speed: " + Mathf.Round(r.velocity.magnitude));
+    }
 
      public void Swipe()
     {
@@ -131,6 +138,10 @@ public class Player : MonoBehaviour {
     public void Punch()
     {
         Debug.Log("Punched");
+    }
+
+    public void Clap() {
+        Debug.Log("Clapped");
     }
 
 }
