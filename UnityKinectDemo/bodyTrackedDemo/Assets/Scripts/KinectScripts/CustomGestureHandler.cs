@@ -55,7 +55,7 @@ public class CustomGestureHandler : MonoBehaviour {
     //Max time to take when executing a punch
     float punchCounterMax = 0.6f;
 
-    bool debug;
+    public bool debug;
 
     // Use this for initialization
     void Start()

@@ -11,7 +11,7 @@ public class Player : MonoBehaviour {
     public bool canMove;
     public bool demo;
     SimpleGestureListener sgl;
-    float hitDistance = 2;
+    float hitDistance = 10;
     float jumpForce = 150;
     Vector3 startPosition;
     KinectManager kinectManager;
@@ -87,6 +87,19 @@ public class Player : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
+       /*
+        float index = -2;
+        for (int i = 0; i < 8; i++)
+        {
+            Vector3 offset = new Vector3(index, 1.4f, 0);
+            Vector3 origin = transform.position + offset;
+            Vector3 direction = transform.TransformDirection(Vector3.forward*hitDistance);
+
+            Debug.DrawRay(origin, direction,Color.red);
+
+            index += 0.5f;
+        }
+        */
         if (lives > 0 && canMove)// && kinectManager.IsUserDetected())
         {
             
@@ -108,18 +121,7 @@ public class Player : MonoBehaviour {
      public void Swipe()
     {
         
-        RaycastHit hit;
-        Vector3 offset = new Vector3(0, 1.4f, 0);
-        Vector3 origin = transform.position + offset;
-        Vector3 direction = transform.TransformDirection(Vector3.forward);
         
-        if (Physics.Raycast(origin, direction, out hit, hitDistance))
-        {
-            if (hit.transform.tag == "Enemy")
-            {
-                Destroy(hit.transform.gameObject);
-            }
-        }
     }
 
     public void Jump()
@@ -138,6 +140,29 @@ public class Player : MonoBehaviour {
     public void Punch()
     {
         Debug.Log("Punched");
+
+        float index = -2;
+        for (int i = 0; i < 8; i++) {
+            RaycastHit hit;
+
+            Vector3 offset = new Vector3(index, 1.4f, 0);
+            Vector3 origin = transform.position + offset;
+            Vector3 direction = transform.TransformDirection(Vector3.forward);
+            index += 0.5f;
+
+            if (Physics.Raycast(origin, direction, out hit, hitDistance))
+            {
+                if (hit.transform.tag == "Wall")
+                {
+                    hit.transform.gameObject.transform.root.GetComponent<WallBreak>().BreakWall();
+                    Debug.Log("Punched wall");
+                    break;
+                }                
+            }
+            else {
+                Debug.Log("Missed");
+            }
+        }
     }
 
     public void Clap() {
