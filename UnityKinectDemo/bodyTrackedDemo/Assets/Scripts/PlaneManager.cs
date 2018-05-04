@@ -50,7 +50,7 @@ public class PlaneManager : MonoBehaviour
 
     void deleteGround()
     {
-        Debug.Log("DELETE---  position: " + characterTransform.position.z + " / spawnZ: " + spawnZ);
+        //Debug.Log("DELETE---  position: " + characterTransform.position.z + " / spawnZ: " + spawnZ);
         Destroy(activeGrounds[0]);
         activeGrounds.RemoveAt(0);
     }

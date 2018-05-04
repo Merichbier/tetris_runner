@@ -182,6 +182,6 @@ public class Player : MonoBehaviour
 
     internal void Circle()
     {
-        throw new NotImplementedException();
+        Debug.Log("Circle detected !");
     }
 }

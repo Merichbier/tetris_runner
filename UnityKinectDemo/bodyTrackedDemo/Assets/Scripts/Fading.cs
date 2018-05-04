@@ -18,7 +18,7 @@ public class Fading : MonoBehaviour
 
         GUI.color = new Color(GUI.color.r, GUI.color.g, GUI.color.b, alpha);
         GUI.depth = drawDepth;
-        GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), fadingTexture);
+        //GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), fadingTexture);
 
     }
 

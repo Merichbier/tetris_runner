@@ -52,6 +52,6 @@ public class EnemyManager : MonoBehaviour
         go.transform.position = new Vector3(Random.Range(-5, 5), Random.Range(0, 20), characterTransform.position.z + 10);
         rb = go.GetComponent<Rigidbody>();
         rb.AddForce(new Vector3(Random.Range(-100, 100), Random.Range(-100, 100), Random.Range(-100, 0)));
-        Debug.Log("snowball position: " + go.transform.position.ToString());
+        //Debug.Log("snowball position: " + go.transform.position.ToString());
     }
 }

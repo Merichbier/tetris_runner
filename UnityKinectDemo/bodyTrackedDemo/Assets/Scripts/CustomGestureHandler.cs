@@ -51,16 +51,18 @@ public class CustomGestureHandler : MonoBehaviour
     bool punchReady;
     bool punched;
 
-    int circleState = 0;
+    int circleStateRight = 0;
+    int circleStateLeft = 0;
 
     private float punchCounter;
-    private float circleCounter;
+    private float circleCounterRight;
+    private float circleCounterLeft;
     private float circleApproximationThreshold = 0.01f;
     private float circleArmThreshold = 0.1f;
 
     //Max time to take when executing a punch
     private float punchCounterMax = 0.6f;
-    private float circleCounterMax = 0.6f;
+    private float circleCounterMax = 1f;
 
     public bool debug;
 
@@ -79,8 +81,23 @@ public class CustomGestureHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        HandleClap();
-        HandlePunch();
+        //HandleClap();
+        //HandlePunch();
+        HandleCircles();
+    }
+
+    private void HandleCircles()
+    {
+        Vector3[] jointsPos = km.GetPlayer1_Pos();
+        Vector3 rightHand = jointsPos[rightHandIndex];
+        Vector3 leftHand = jointsPos[leftHandIndex];
+        Vector3 rightElbow = jointsPos[rightElbowIndex];
+        Vector3 leftElbow = jointsPos[leftElbowIndex];
+        Vector3 righShoulder = jointsPos[rightShoulderIndex];
+        Vector3 leftShoulder = jointsPos[leftShoulderIndex];
+
+        HandleCircle(rightHand, rightElbow, righShoulder, true);
+        HandleCircle(leftHand, leftElbow, leftShoulder, false);
     }
 
     void SetText(Text t, string s)
@@ -188,7 +205,7 @@ public class CustomGestureHandler : MonoBehaviour
     }
 
 
-    void HandleCircle(Vector3 hand, Vector3 elbow, Vector3 shoulder)
+    void HandleCircle(Vector3 hand, Vector3 elbow, Vector3 shoulder, bool forRightHand)
     {
         // We want the player to fully extend the arm when doing a circle
         float straighDist = Vector3.Magnitude(hand - shoulder);
@@ -219,6 +236,10 @@ public class CustomGestureHandler : MonoBehaviour
         bool isNorthWest = hand.x < shoulder.x
             && hand.y > shoulder.y;
 
+        circleCounterRight += forRightHand ? Time.deltaTime : 0;
+        circleCounterLeft += forRightHand ? 0 : Time.deltaTime;
+        float circleCounter = forRightHand ? circleCounterRight : circleCounterLeft;
+        int circleState = forRightHand ? circleStateRight : circleStateLeft;
         if (circleCounter < circleCounterMax && isArmExtended)
         {
             if ((circleState == 0 && isNorth)
@@ -230,31 +251,53 @@ public class CustomGestureHandler : MonoBehaviour
                 || (circleState == 6 && isWest)
                 || (circleState == 7 && isNorthWest))
             {
-                circleState++;
-                circleCounter = 0;
-            }else if(circleState == 8)
+                Debug.Log("CircleState" + (forRightHand ? "Right" : "Left") + " is now : " + (circleState + 1));
+
+                if (forRightHand)
+                {
+                    circleStateRight += 1;
+                    circleCounterRight = 0;
+                }
+                else
+                {
+                    circleStateLeft += 1;
+                    circleCounterLeft = 0;
+                }
+
+            }
+            else if (circleState == 8)
             {
                 player.Circle();
+                resetCirleSettings("", forRightHand);
             }
         }
         else if (!(circleCounter < circleCounterMax) && circleState > 0)
         {
-            resetCirleSettings("too slow");
+            resetCirleSettings("too slow", forRightHand);
         }
         else if (!isArmExtended && circleState > 0)
         {
-            resetCirleSettings("arm not exteded");
-        }else
+            resetCirleSettings("arm not exteded", forRightHand);
+        }
+        else
         {
-            resetCirleSettings("State was " + circleState);
+            resetCirleSettings("State was " + circleState, forRightHand);
         }
     }
 
-    private void resetCirleSettings(string msg)
+    private void resetCirleSettings(string msg, bool forRightHand)
     {
-        Debug.Log("Circle aborted : " + msg);
-        circleState = 0;
-        circleCounter = 0;
+        //Debug.Log("Circle aborted : " + msg);
+        if (forRightHand)
+        {
+            circleStateRight = 0;
+            circleCounterRight = 0;
+        }
+        else
+        {
+            circleStateLeft = 0;
+            circleCounterLeft = 0;
+        }
     }
 
     private bool ApproxmateEqual(float a, float b, float threshold)
