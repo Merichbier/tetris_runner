@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CustomGestureHandler : MonoBehaviour {
-   
+public class CustomGestureHandler : MonoBehaviour
+{
+
     KinectManager km;
 
     private const int leftHandIndex = (int)KinectWrapper.NuiSkeletonPositionIndex.HandLeft;
@@ -50,10 +51,16 @@ public class CustomGestureHandler : MonoBehaviour {
     bool punchReady;
     bool punched;
 
+    int circleState = 0;
+
     private float punchCounter;
+    private float circleCounter;
+    private float circleApproximationThreshold = 0.01f;
+    private float circleArmThreshold = 0.1f;
 
     //Max time to take when executing a punch
-    float punchCounterMax = 0.6f;
+    private float punchCounterMax = 0.6f;
+    private float circleCounterMax = 0.6f;
 
     public bool debug;
 
@@ -62,7 +69,8 @@ public class CustomGestureHandler : MonoBehaviour {
     {
         km = GameObject.Find("Main Camera").GetComponent<KinectManager>();
         player = GetComponent<Player>();
-        if (debug) { 
+        if (debug)
+        {
             custom = GameObject.Find("p_custom").GetComponent<Text>();
             custom2 = GameObject.Find("p_custom2").GetComponent<Text>();
         }
@@ -96,7 +104,8 @@ public class CustomGestureHandler : MonoBehaviour {
             clapCount = 0;
             clapReady = true;
             clapTouch = false;
-            if (debug) { 
+            if (debug)
+            {
                 custom.text = "Did Clap ? ";
             }
         }
@@ -132,7 +141,7 @@ public class CustomGestureHandler : MonoBehaviour {
         }
     }
 
-    
+
 
     void HandlePunch()
     {
@@ -179,4 +188,77 @@ public class CustomGestureHandler : MonoBehaviour {
     }
 
 
+    void HandleCircle(Vector3 hand, Vector3 elbow, Vector3 shoulder)
+    {
+        // We want the player to fully extend the arm when doing a circle
+        float straighDist = Vector3.Magnitude(hand - shoulder);
+        float joinDist = Vector3.Magnitude(hand - elbow) + Vector3.Magnitude(elbow - shoulder);
+        bool isArmExtended = ApproxmateEqual(joinDist, straighDist, circleArmThreshold);
+
+        bool isNorth = ApproxmateEqual(hand.x, shoulder.x, circleApproximationThreshold)
+            && hand.y > shoulder.y;
+
+        bool isNorthEast = hand.x > shoulder.x
+            && hand.y > shoulder.y;
+
+        bool isEast = hand.x > shoulder.x
+            && ApproxmateEqual(hand.y, shoulder.y, circleApproximationThreshold);
+
+        bool isSouthEast = hand.x > shoulder.x
+            && hand.y < shoulder.y;
+
+        bool isSouth = ApproxmateEqual(hand.x, shoulder.x, circleApproximationThreshold)
+            && hand.y < shoulder.y;
+
+        bool isSouthWest = hand.x < shoulder.x
+            && hand.y < shoulder.y;
+
+        bool isWest = hand.x < shoulder.x
+            && ApproxmateEqual(hand.y, shoulder.y, circleApproximationThreshold);
+
+        bool isNorthWest = hand.x < shoulder.x
+            && hand.y > shoulder.y;
+
+        if (circleCounter < circleCounterMax && isArmExtended)
+        {
+            if ((circleState == 0 && isNorth)
+                || (circleState == 1 && isNorthEast)
+                || (circleState == 2 && isEast)
+                || (circleState == 3 && isSouthEast)
+                || (circleState == 4 && isSouth)
+                || (circleState == 5 && isSouthWest)
+                || (circleState == 6 && isWest)
+                || (circleState == 7 && isNorthWest))
+            {
+                circleState++;
+                circleCounter = 0;
+            }else if(circleState == 8)
+            {
+                player.Circle();
+            }
+        }
+        else if (!(circleCounter < circleCounterMax) && circleState > 0)
+        {
+            resetCirleSettings("too slow");
+        }
+        else if (!isArmExtended && circleState > 0)
+        {
+            resetCirleSettings("arm not exteded");
+        }else
+        {
+            resetCirleSettings("State was " + circleState);
+        }
+    }
+
+    private void resetCirleSettings(string msg)
+    {
+        Debug.Log("Circle aborted : " + msg);
+        circleState = 0;
+        circleCounter = 0;
+    }
+
+    private bool ApproxmateEqual(float a, float b, float threshold)
+    {
+        return Math.Abs(b - a) < threshold;
+    }
 }

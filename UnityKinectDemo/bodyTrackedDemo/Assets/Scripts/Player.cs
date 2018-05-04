@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class Player : MonoBehaviour
 {
@@ -179,4 +180,8 @@ public class Player : MonoBehaviour
         Debug.Log("Clapped");
     }
 
+    internal void Circle()
+    {
+        throw new NotImplementedException();
+    }
 }
