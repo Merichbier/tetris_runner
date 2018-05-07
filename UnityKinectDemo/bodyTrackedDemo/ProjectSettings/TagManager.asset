@@ -6,6 +6,11 @@ TagManager:
   tags:
   - Wall
   - Character
+  - Terrain0
+  - Terrain1
+  - Terrain2
+  - Terrain3
+  - Terrain4
   layers:
   - Default
   - TransparentFX

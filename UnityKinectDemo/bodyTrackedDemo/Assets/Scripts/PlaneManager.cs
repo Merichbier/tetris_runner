@@ -5,21 +5,22 @@ using UnityEngine;
 public class PlaneManager : MonoBehaviour
 {
     public GameObject[] groundPrefabs;
-    public float spawnZ;
+    public float spawnZ = 0;
     public float groundLength = 20.0f;
     public int groundNumScreen = 8;
 
     private Transform characterTransform;
 
     private List<GameObject> activeGrounds;
+    private int nextToSpawn = 0;
+    private float terrainYOffset = -8.75f;
+    private int THRESHOLD = 5;
 
     // Use this for initialization
     void Start()
     {
         activeGrounds = new List<GameObject>();
         characterTransform = GameObject.FindGameObjectWithTag("Character").transform;
-        groundLength = 20;
-        spawnZ = characterTransform.position.z - groundLength / 2;
         for (int i = 0; i < groundNumScreen; i++)
         {
             spawnGround();
@@ -31,8 +32,9 @@ public class PlaneManager : MonoBehaviour
     void Update()
     {
         characterTransform = GameObject.FindGameObjectWithTag("Character").transform;
-        if (spawnZ + groundLength / 2 - characterTransform.position.z < groundNumScreen * groundLength)
+        if (characterTransform.position.z > spawnZ - (groundNumScreen - 1) * groundLength + THRESHOLD)
         {
+            Debug.Log(characterTransform.position.z + " > " + (spawnZ - groundNumScreen * groundLength + THRESHOLD));
             spawnGround();
             deleteGround();
         }
@@ -41,9 +43,10 @@ public class PlaneManager : MonoBehaviour
     void spawnGround(int prefabIndex = -1)
     {
         GameObject go;
-        go = Instantiate(groundPrefabs[0]) as GameObject;
+        go = Instantiate(groundPrefabs[nextToSpawn]) as GameObject;
+        nextToSpawn = (nextToSpawn + 1) % groundPrefabs.Length;
         go.transform.SetParent(transform);
-        go.transform.position = characterTransform.forward * spawnZ;
+        go.transform.position = new Vector3(-groundLength / 2, terrainYOffset, spawnZ);//characterTransform.forward * spawnZ;
         spawnZ += groundLength;
         activeGrounds.Add(go);
     }
