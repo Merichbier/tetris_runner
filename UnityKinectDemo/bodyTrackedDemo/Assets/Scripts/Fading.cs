@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Fading : MonoBehaviour
 {
@@ -45,8 +46,9 @@ public class Fading : MonoBehaviour
         if (Input.GetKey("up"))
         {
             BeginFade(1);
-            if (Application.loadedLevel == 0) Application.LoadLevel(1);
-            else if (Application.loadedLevel == 1) Application.LoadLevel(0);
+            SceneManager.LoadScene(1 - SceneManager.GetActiveScene().buildIndex); // 1 <-> 2
+            //if (Application.loadedLevel == 0) Application.LoadLevel(1);
+            //else if (Application.loadedLevel == 1) Application.LoadLevel(0);
         }
     }
 }

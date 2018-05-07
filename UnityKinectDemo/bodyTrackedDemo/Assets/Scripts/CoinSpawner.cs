@@ -9,17 +9,33 @@ public class CoinSpawner : MonoBehaviour
     float coinSpacing = 1;
     public float yOffset;
     public float xOffset;
-
+    public float zOffset;
     public bool sinusoidal;
 
     //Sinusoidal pattern
     float amplitude = 1;
     float period = 0.5f;
 
+    GameObject coinParent;
+
     // Use this for initialization
     void Start()
     {
-        GameObject coinParent = new GameObject("Coins");
+        coinParent = new GameObject("Coins");
+        zOffset = 0;
+        CoinSpawn();
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+
+    void SinusoidalSpawn()
+    {
+        //GameObject coinParent = new GameObject("Coins");
         for (int i = 0; i < numCoins; i++)
         {
             float x = 0;
@@ -28,14 +44,17 @@ public class CoinSpawner : MonoBehaviour
                 x = amplitude * Mathf.Sin(period * i);
             }
             GameObject coin = GameObject.Instantiate(Resources.Load("Coin")) as GameObject;
-            coin.transform.position = new Vector3(x + xOffset, yOffset, i * coinSpacing);
+            coin.transform.position = new Vector3(x + xOffset, yOffset, zOffset + i * coinSpacing);
             coin.transform.parent = coinParent.transform;
         }
     }
-
-    // Update is called once per frame
-    void Update()
+    void CoinSpawn()
     {
+        SinusoidalSpawn();
+    }
 
+    void changeSpacing(float newSpacing)
+    {
+        coinSpacing = newSpacing;
     }
 }

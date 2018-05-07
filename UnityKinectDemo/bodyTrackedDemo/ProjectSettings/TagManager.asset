@@ -6,6 +6,10 @@ TagManager:
   tags:
   - Wall
   - Character
+  - Description
+  - PlaneManager
+  - EnemyManager
+  - WallManager
   layers:
   - Default
   - TransparentFX

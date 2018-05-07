@@ -19,7 +19,7 @@ public class WallManager : MonoBehaviour
         Debug.Log("walltest");
         sleepTime = 100;
         sleepTimeLeft = sleepTime;
-        Debug.Log("start/ sleepTimeLeft = " + sleepTimeLeft);
+        //Debug.Log("start/ sleepTimeLeft = " + sleepTimeLeft);
         activeWalls = new List<GameObject>();
         characterTransform = GameObject.FindGameObjectWithTag("Character").transform;
 
@@ -29,25 +29,20 @@ public class WallManager : MonoBehaviour
     void Update()
     {
         characterTransform = GameObject.FindGameObjectWithTag("Character").transform;
-        Debug.Log("sleepTimeLeft = " + sleepTimeLeft);
+        /*
+         * Debug.Log("sleepTimeLeft = " + sleepTimeLeft);
 
         if (sleepTimeLeft > 0) sleepTimeLeft -= 1.0f;
         else
         {
             spawnWall();
         }
-
-        if (activeWalls.Count != 0)
-        {
-            if (activeWalls[0].transform.position.z < characterTransform.position.z - 10)
-            {
-                deleteWall();
-            }
-        }
+        checkWall();
+        */
 
     }
 
-    void spawnWall(int prefabIndex = -1)
+    public void spawnWall(int prefabIndex = -1)
     {
         Debug.Log("Spawn Wall");
         GameObject go;
@@ -60,10 +55,16 @@ public class WallManager : MonoBehaviour
         Debug.Log("Reset = " + sleepTimeLeft);
     }
 
-    void deleteWall()
+    public void checkWall()
     {
-        Debug.Log("DELETE---  character: " + characterTransform.position.z + " / wall: " + activeWalls[0].transform.position.z);
-        Destroy(activeWalls[0]);
-        activeWalls.RemoveAt(0);
+        if (activeWalls.Count != 0)
+        {
+            if (activeWalls[0].transform.position.z < characterTransform.position.z - 10)
+            {
+                Debug.Log("DELETE---  character: " + characterTransform.position.z + " / wall: " + activeWalls[0].transform.position.z);
+                Destroy(activeWalls[0]);
+                activeWalls.RemoveAt(0);
+            }
+        }
     }
 }
