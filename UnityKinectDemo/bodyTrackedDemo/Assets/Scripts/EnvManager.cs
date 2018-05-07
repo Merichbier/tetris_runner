@@ -5,8 +5,9 @@ using UnityEngine;
 public class EnvManager : MonoBehaviour
 {
 
-    float sleepTime;
-    float sleepTimeLeft;
+    int sleepTime;
+    int sleepTimeLeft;
+    public bool bonus;
     private Transform characterTransform;
     PlaneManager pm; // planeManager;
     EnemyManager em; //enemyManager;
@@ -28,15 +29,30 @@ public class EnvManager : MonoBehaviour
         characterTransform = GameObject.FindGameObjectWithTag("Character").transform;
         Debug.Log("sleepTimeLeft = " + sleepTimeLeft);
 
-        if (sleepTimeLeft > 0) sleepTimeLeft -= 1.0f;
-        else
+        // spawn wall and enemy alternately ( they should not appear simultaneously)
+        if (!bonus)
         {
-            Debug.Log("em, wm call");
-            wm.spawnWall();
-            em.spawnEnemy();
-            sleepTimeLeft = sleepTime;
+            if (sleepTimeLeft == sleepTime / 2)
+            {
+                wm.spawnWall();
+            }
+            if (sleepTimeLeft == 0)
+            {
+                em.spawnEnemy();
+            }
+
+            // sleepTIme deduction every moment
+            if (sleepTimeLeft > 0) sleepTimeLeft -= 1;
+            else
+            {
+                sleepTimeLeft = sleepTime;
+            }
+
+            // check if there is any inactive walls or enemies to destroy
+            wm.checkWall();
+            em.checkEnemy();
+
         }
-        wm.checkWall();
-        em.checkEnemy();
     }
+
 }

@@ -6,12 +6,13 @@ public class CoinSpawner : MonoBehaviour
 {
 
     int numCoins = 30;
-    float coinSpacing = 1;
+    public float coinSpacing = 1;
     public float yOffset;
     public float xOffset;
     public float zOffset;
     public bool sinusoidal;
 
+    private int spawnTimes = 5;
     //Sinusoidal pattern
     float amplitude = 1;
     float period = 0.5f;
@@ -23,14 +24,21 @@ public class CoinSpawner : MonoBehaviour
     {
         coinParent = new GameObject("Coins");
         zOffset = 0;
-        CoinSpawn();
-
+        for (int i = 0; i < spawnTimes; i++)
+        {
+            SpawnCoin();
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        Transform characterTransform = GameObject.FindGameObjectWithTag("Character").transform;
+        if (zOffset - characterTransform.position.z < spawnTimes * numCoins * coinSpacing)
+        {
+            SpawnCoin();
+            CheckCoin();
+        }
     }
 
     void SinusoidalSpawn()
@@ -47,14 +55,35 @@ public class CoinSpawner : MonoBehaviour
             coin.transform.position = new Vector3(x + xOffset, yOffset, zOffset + i * coinSpacing);
             coin.transform.parent = coinParent.transform;
         }
+        zOffset = zOffset + numCoins * coinSpacing;
     }
-    void CoinSpawn()
+
+    void StraightSpawn()
     {
-        SinusoidalSpawn();
+        for (int i = 0; i < numCoins; i++)
+        {
+            GameObject coin = GameObject.Instantiate(Resources.Load("Coin")) as GameObject;
+            coin.transform.position = new Vector3(xOffset, yOffset, zOffset + i * coinSpacing);
+            coin.transform.parent = coinParent.transform;
+        }
+        zOffset = zOffset + numCoins * coinSpacing;
+    }
+
+    void SpawnCoin()
+    {
+        if (sinusoidal) SinusoidalSpawn();
+        else StraightSpawn();
     }
 
     void changeSpacing(float newSpacing)
     {
         coinSpacing = newSpacing;
     }
+
+    void CheckCoin()
+    {
+
+    }
+
+
 }

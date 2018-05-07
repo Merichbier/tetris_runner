@@ -220,10 +220,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 885e082db71c1dc499f11a6aebc28875, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  coinSpacing: 1
   yOffset: 0.18
   xOffset: 0
   zOffset: 0
-  sinusoidal: 1
+  sinusoidal: 0
 --- !u!1 &300334882
 GameObject:
   m_ObjectHideFlags: 0

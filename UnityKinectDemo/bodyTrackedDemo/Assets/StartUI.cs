@@ -41,7 +41,7 @@ public class StartUI : MonoBehaviour
 
         if (Input.GetKey("down"))
         {
-            SceneManager.LoadScene(1); // 1 <-> 2
+            SceneManager.LoadScene(1); // 0 (start) -> 1(main)
         }
     }
 
@@ -68,7 +68,7 @@ public class StartUI : MonoBehaviour
     {
         if (false)
         {
-            //scene change
+            SceneManager.LoadScene(1);
         }
     }
 }
