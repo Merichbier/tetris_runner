@@ -1,28 +1,43 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
 
-    int lives = 1;
-    float score;
+   
+    float health;
+    float maxHealth=10;
+
+    float energy;
+    float maxEnergy=10;
+    float energyGainAmount = 0.1f; //0.1 energy gained per second
+
+    Image healthBarFill;
+    Image energyBarFill;
+
     float speed = 20;
-    Rigidbody r;
     float maxSpeed = 7;
+
+    float score;
+
+    Rigidbody r;
+
     public bool canMove;
     public bool demo;
-    SimpleGestureListener sgl;
     float hitDistance = 10;
     float jumpForce = 150;
     Vector3 startPosition;
+
     KinectManager kinectManager;
+    SimpleGestureListener sgl;
+
     float wallPoints = 10;
 
-    bool furyModeReady;
     bool inFuryMode;
-
+    
     // Use this for initialization
     void Start()
     {
@@ -30,9 +45,10 @@ public class Player : MonoBehaviour
         r.AddForce(new Vector3(0, 0, speed));
         sgl = GameObject.Find("Main Camera").GetComponent<SimpleGestureListener>();
         UI.UpdateText(0, "Score: " + score);
-        UI.UpdateText(1, "Lives: " + lives);
+       // UI.UpdateText(1, "Lives: " + lives);
         startPosition = transform.position;
         kinectManager = GameObject.Find("Main Camera").GetComponent<KinectManager>();
+        health = maxHealth;
     }
 
     void OnCollisionEnter(Collision collision)
@@ -67,8 +83,7 @@ public class Player : MonoBehaviour
 
     void RemoveLife()
     {
-        lives -= 1;
-        UI.UpdateText(1, "Lives: " + lives);
+        health -= 1;
     }
 
     void UpdateScore(float f, bool increment)
@@ -105,7 +120,7 @@ public class Player : MonoBehaviour
              index += 0.5f;
          }
          */
-        if (lives > 0 && canMove)// && kinectManager.IsUserDetected())
+        if (health > 0 && canMove)// && kinectManager.IsUserDetected())
         {
 
             if (r.velocity.z < maxSpeed)
@@ -122,6 +137,14 @@ public class Player : MonoBehaviour
         }
 
         UI.UpdateText(2, "Speed: " + Mathf.Round(r.velocity.magnitude));
+        UpdateUiBars();
+        energy += Time.deltaTime * energyGainAmount;
+    }
+
+
+    void UpdateUiBars() {
+        healthBarFill.fillAmount = health / maxHealth;
+        energyBarFill.fillAmount = energy / maxEnergy;
     }
 
     public void Swipe()
@@ -137,10 +160,9 @@ public class Player : MonoBehaviour
 
     public void EnterFuryMode()
     {
-        if (furyModeReady)
+        if (!inFuryMode)
         {
             inFuryMode = true;
-            furyModeReady = false;
         }
     }
 
@@ -174,11 +196,16 @@ public class Player : MonoBehaviour
         }
     }
 
+    //Enter fury mode
     public void Clap()
     {
         Debug.Log("Clapped");
+        if (energy >= maxEnergy) {
+            EnterFuryMode();
+        }
     }
 
+    //Enter the bonus scene
     internal void Circle()
     {
         Debug.Log("Circle detected !");
