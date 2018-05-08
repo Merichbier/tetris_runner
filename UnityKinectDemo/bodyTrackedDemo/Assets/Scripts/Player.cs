@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -100,9 +101,7 @@ public class Player : MonoBehaviour
              Vector3 offset = new Vector3(index, 1.4f, 0);
              Vector3 origin = transform.position + offset;
              Vector3 direction = transform.TransformDirection(Vector3.forward*hitDistance);
-
              Debug.DrawRay(origin, direction,Color.red);
-
              index += 0.5f;
          }
          */
@@ -183,5 +182,6 @@ public class Player : MonoBehaviour
     internal void Circle()
     {
         Debug.Log("Circle detected !");
+        SceneManager.LoadScene(2);
     }
 }

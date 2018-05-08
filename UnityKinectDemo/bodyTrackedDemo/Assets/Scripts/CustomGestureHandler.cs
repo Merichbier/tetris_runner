@@ -66,23 +66,21 @@ public class CustomGestureHandler : MonoBehaviour
 
     public bool debug;
 
+    StartUI startUI;
+
     // Use this for initialization
     void Start()
     {
         km = GameObject.Find("Main Camera").GetComponent<KinectManager>();
         player = GetComponent<Player>();
-        if (debug)
-        {
-            custom = GameObject.Find("p_custom").GetComponent<Text>();
-            custom2 = GameObject.Find("p_custom2").GetComponent<Text>();
-        }
+        startUI = GameObject.Find("GameHandler").GetComponent<StartUI>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        //HandleClap();
-        //HandlePunch();
+        HandleClap();
+        HandlePunch();
         HandleCircles();
     }
 
@@ -124,6 +122,10 @@ public class CustomGestureHandler : MonoBehaviour
             if (debug)
             {
                 custom.text = "Did Clap ? ";
+            }
+            if (startUI != null)
+            {
+                startUI.detectClap();
             }
         }
 
@@ -189,6 +191,10 @@ public class CustomGestureHandler : MonoBehaviour
                 if (debug)
                 {
                     custom2.text = "Did Punch ? Punched ";
+                }
+                if (startUI != null)
+                {
+                    startUI.detectPunch();
                 }
             }
             if (punchCounter > punchCounterMax)
@@ -268,6 +274,10 @@ public class CustomGestureHandler : MonoBehaviour
             else if (circleState == 8)
             {
                 player.Circle();
+                if (startUI != null)
+                {
+                    startUI.detectCircle();
+                }
                 resetCirleSettings("", forRightHand);
             }
         }
