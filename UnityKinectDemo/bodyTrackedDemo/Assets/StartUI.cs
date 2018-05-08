@@ -9,17 +9,20 @@ public class StartUI : MonoBehaviour
 
     // Use this for initialization
     int mode;
-    string[] dsText = { "Try Punch", "Try Splash", "Try draw a circle" };
+    string[] dsText = { "Try Punching", "Try Clapping", "Try to draw a circle" };
+    TextMeshProUGUI ds;
+
     void Start()
     {
         mode = 0; // tryPunch
-        var ds = GameObject.FindGameObjectWithTag("Description").GetComponent<TextMeshPro>();
+        ds = GameObject.FindGameObjectWithTag("Description").GetComponent<TextMeshProUGUI>();
         ds.SetText(dsText[mode]);
     }
 
     // Update is called once per frame
     void Update()
     {
+        /*
         switch (mode)
         {
             case 0:
@@ -38,37 +41,28 @@ public class StartUI : MonoBehaviour
                     break;
                 }
         }
-
+        */
         if (Input.GetKey("down"))
         {
             SceneManager.LoadScene(1); // 0 (start) -> 1(main)
         }
     }
 
-    void detectPunch()
+    public void detectPunch()
     {
-        if (false)
-        {
-            mode = 1;
-            var ds = GameObject.FindGameObjectWithTag("Description").GetComponent<TextMeshPro>();
-            ds.SetText(dsText[mode]);
-        }
-    }
-    void detectSplash()
-    {
-        if (false)
-        {
-            mode = 2;
-            var ds = GameObject.FindGameObjectWithTag("Description").GetComponent<TextMeshPro>();
-            ds.SetText(dsText[mode]);
-        }
+        mode = 1;
+        ds.SetText(dsText[mode]);
     }
 
-    void detectCircle()
+    public void detectClap()
     {
-        if (false)
-        {
-            SceneManager.LoadScene(1);
-        }
+        mode = 2;
+        ds.SetText(dsText[mode]);
+        SceneManager.LoadScene(1); //to remove when you find circle detector
+    }
+
+    public void detectCircle()
+    {
+        SceneManager.LoadScene(1);
     }
 }

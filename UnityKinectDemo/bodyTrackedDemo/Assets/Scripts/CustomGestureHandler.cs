@@ -22,9 +22,6 @@ public class CustomGestureHandler : MonoBehaviour {
     private const int leftHipIndex = (int)KinectWrapper.NuiSkeletonPositionIndex.HipLeft;
     private const int rightHipIndex = (int)KinectWrapper.NuiSkeletonPositionIndex.HipRight;
 
-    Text custom;
-    Text custom2;
-
     bool clapReady;
     bool clapTouch;
 
@@ -55,17 +52,14 @@ public class CustomGestureHandler : MonoBehaviour {
     //Max time to take when executing a punch
     float punchCounterMax = 0.6f;
 
-    public bool debug;
+    StartUI startUI;
 
     // Use this for initialization
     void Start()
     {
         km = GameObject.Find("Main Camera").GetComponent<KinectManager>();
         player = GetComponent<Player>();
-        if (debug) { 
-            custom = GameObject.Find("p_custom").GetComponent<Text>();
-            custom2 = GameObject.Find("p_custom2").GetComponent<Text>();
-        }
+        startUI = GameObject.Find("GameHandler").GetComponent<StartUI>();
     }
 
     // Update is called once per frame
@@ -96,9 +90,7 @@ public class CustomGestureHandler : MonoBehaviour {
             clapCount = 0;
             clapReady = true;
             clapTouch = false;
-            if (debug) { 
-                custom.text = "Did Clap ? ";
-            }
+            
         }
 
         //make sure clap happens fast enough
@@ -112,10 +104,11 @@ public class CustomGestureHandler : MonoBehaviour {
                 clapReady = false;
                 clapCount = 0;
                 player.Clap();
-                if (debug)
-                {
-                    custom.text = "Did Clap ? Clapped";
+
+                if (startUI != null) { 
+                    startUI.detectClap();
                 }
+
             }
 
             //failed to clap fast enough
@@ -124,10 +117,7 @@ public class CustomGestureHandler : MonoBehaviour {
                 clapTouch = false;
                 clapReady = false;
                 clapCount = 0;
-                if (debug)
-                {
-                    custom.text = "Did Clap ? ";
-                }
+                
             }
         }
     }
@@ -144,10 +134,7 @@ public class CustomGestureHandler : MonoBehaviour {
             punchReady = true;
             punched = false;
             punchCounter = 0;
-            if (debug)
-            {
-                custom2.text = "Did Punch ? ";
-            }
+           
         }
 
         if (punchReady && !punched && Mathf.Abs(diffPos.z) > 0.33f)
@@ -160,20 +147,17 @@ public class CustomGestureHandler : MonoBehaviour {
                 punchReady = false;
                 punchCounter = 0;
                 player.Punch();
-                if (debug)
-                {
-                    custom2.text = "Did Punch ? Punched ";
+                if (startUI != null) { 
+                    startUI.detectPunch();
                 }
+
             }
             if (punchCounter > punchCounterMax)
             {
                 punched = false;
                 punchReady = false;
                 punchCounter = 0;
-                if (debug)
-                {
-                    custom2.text = "Did Punch ? ";
-                }
+                
             }
         }
     }
