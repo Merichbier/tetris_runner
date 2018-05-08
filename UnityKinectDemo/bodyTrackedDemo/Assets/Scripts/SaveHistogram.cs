@@ -24,7 +24,7 @@ public class SaveHistogram : MonoBehaviour {
         debug.text = "Taking snapshot";
         Texture2D img = km.GetUsersLblTex();
         debug.text="Saving img";
-        SaveTextureToFile(img, "Assets/1.png");
+        SaveTextureToFile(img, "Assets/" +Random.Range(0, 1000000)+".png");
         debug.text = "Done";
     }
 

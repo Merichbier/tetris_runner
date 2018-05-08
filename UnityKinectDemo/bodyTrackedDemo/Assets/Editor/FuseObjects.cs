@@ -9,22 +9,43 @@ public class FuseObjects : MonoBehaviour{
     [MenuItem("Custom/Subtract")]
     static void Subtract()
     {
-        Transform[] obj = Selection.activeTransform.GetComponentsInChildren<Transform>();
+        Transform root = Selection.activeTransform;
 
-        GameObject g1 = obj[1].gameObject;
-        GameObject g2 = obj[2].gameObject;
+        GameObject composite=null;
+        
+        while (root.childCount > 1) {
+            Transform[] obj = root.GetComponentsInChildren<Transform>();
 
-        Mesh m = CSG.Subtract(g1, g2);
+            GameObject g1 = obj[1].gameObject;
+            GameObject g2 = obj[2].gameObject;
 
-        GameObject composite = new GameObject();
+            Mesh m = CSG.Subtract(g1, g2);
 
-        composite.AddComponent<MeshFilter>().sharedMesh = m;
-        composite.AddComponent<MeshRenderer>().sharedMaterial = g2.GetComponent<MeshRenderer>().sharedMaterial;
+            composite = new GameObject();
 
-        GenerateBarycentric(composite);
+            composite.AddComponent<MeshFilter>().sharedMesh = m;
+            composite.AddComponent<MeshRenderer>().sharedMaterial = g2.GetComponent<MeshRenderer>().sharedMaterial;
 
-        //GameObject.Destroy(g1);
-        //GameObject.Destroy(g2);
+            GenerateBarycentric(composite);
+
+            composite.transform.parent = Selection.activeTransform;
+
+            composite.transform.SetAsFirstSibling();
+
+            g1.transform.parent = GameObject.Find("backups").transform;
+            g2.transform.parent = GameObject.Find("backups").transform;
+
+            g1.SetActive(false);
+            g2.SetActive(false);
+
+            if (g1.name.Contains("New")) {
+                DestroyImmediate(g1);
+            }
+            if (g2.name.Contains("New"))
+            {
+                DestroyImmediate(g2);
+            }
+        }
 
         string saveName = "Object_" + Random.Range(0, 10000000);
         var mf = composite.GetComponent<MeshFilter>();
@@ -35,7 +56,8 @@ public class FuseObjects : MonoBehaviour{
             //            AssetDatabase.CreateAsset(mf.mesh, savePath);
             AssetDatabase.CreateAsset(mf.sharedMesh, savePath);
         }
-        composite.transform.position += new Vector3(0, 0, -3);
+        //composite.transform.position += new Vector3(0, 0, 0);
+   
     }
 
     [MenuItem("Custom/Union")]
@@ -53,7 +75,10 @@ public class FuseObjects : MonoBehaviour{
         composite.AddComponent<MeshFilter>().sharedMesh = m;
         composite.AddComponent<MeshRenderer>().sharedMaterial = g[1].GetComponent<MeshRenderer>().sharedMaterial;
         GenerateBarycentric(composite);
-        Debug.Log("Did 0,1");
+
+        composite.transform.parent = Selection.activeTransform;
+        DestroyImmediate(g[0]);
+        DestroyImmediate(g[1]);
 
         for (int i = 2; i < obj.Length-2; i++)
         {
@@ -73,7 +98,7 @@ public class FuseObjects : MonoBehaviour{
             //            AssetDatabase.CreateAsset(mf.mesh, savePath);
             AssetDatabase.CreateAsset(mf.sharedMesh, savePath);
         }
-        composite.transform.position += new Vector3(0, 0, -3);
+        composite.transform.position += new Vector3(0, 0, 0);
 
         Debug.Log("Created union");
     }
