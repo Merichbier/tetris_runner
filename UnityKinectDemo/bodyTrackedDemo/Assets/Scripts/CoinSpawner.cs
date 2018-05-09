@@ -36,11 +36,23 @@ public class CoinSpawner : MonoBehaviour {
         }
     }
 
-    public void ChangeColor(Material m) {
+    void ChangeColor(Material m) {
         foreach(GameObject g in coins)
         {
             g.GetComponent<MeshRenderer>().material = m;
         }
+    }
+
+    void ChangeScore(int s){
+        foreach (GameObject g in coins)
+        {
+            g.GetComponent<Coin>().SetPoints(s);
+        }
+    }
+
+    public void ChangeCoinProperties(Material m, int score) {
+        ChangeColor(m);
+        ChangeScore(score);
     }
 
 }

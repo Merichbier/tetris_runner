@@ -344,6 +344,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcf7cec90e937b947822681a6dd0f728, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bonusMaterial: {fileID: 2100000, guid: 9a219312cdda5ff4bb2b5510d90c3b0d, type: 2}
+  normalMaterial: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  bonusCoin: {fileID: 2100000, guid: ea70acc9eb3d66f44a40de5ca35f10ca, type: 2}
+  normalCoin: {fileID: 2100000, guid: 1f689858edc067e4f97110124fed6d01, type: 2}
 --- !u!1 &300334882
 GameObject:
   m_ObjectHideFlags: 0

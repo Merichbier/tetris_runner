@@ -19,6 +19,11 @@ public class Coin : MonoBehaviour {
         return points;
     }
 
+    public void SetPoints(int i) {
+        points = i;
+    }
+
+
     void Move()
     {
         Vector3 currPos = transform.position;

@@ -22,6 +22,9 @@ public class BonusScene : MonoBehaviour {
     PlaneManager pm;
     CoinSpawner cs;
 
+    int bonusPoints = 20;
+    int normalPoints = 10;
+
     bool bonusEnabled;
 
 	// Use this for initialization
@@ -42,15 +45,15 @@ public class BonusScene : MonoBehaviour {
         pm.ChangeMaterial(bonusMaterial);
         barFill.enabled = true;
         barBorder.enabled = true;
-        cs.ChangeColor(normalCoin);
+        cs.ChangeCoinProperties(bonusCoin,bonusPoints);
     }
 
     void TurnOffBonus() {
         bonusEnabled = false;
         pm.ChangeMaterial(normalMaterial);
         barFill.enabled = false;
-        barBorder.enabled = false;
-        cs.ChangeColor(bonusCoin);
+        barBorder.enabled = false;        
+        cs.ChangeCoinProperties(normalCoin,normalPoints);
     }
 
     void Update () {
