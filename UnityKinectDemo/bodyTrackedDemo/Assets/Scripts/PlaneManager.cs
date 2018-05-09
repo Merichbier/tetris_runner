@@ -59,4 +59,12 @@ public class PlaneManager : MonoBehaviour
         Destroy(activeGrounds[0]);
         activeGrounds.RemoveAt(0);
     }
+
+    public void ChangeMaterial(Material m) {
+        foreach(GameObject g in activeGrounds)
+        {
+            MeshRenderer mr = g.GetComponent<MeshRenderer>();
+            mr.material = m;
+        }
+    }
 }

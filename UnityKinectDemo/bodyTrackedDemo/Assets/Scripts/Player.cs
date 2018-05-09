@@ -33,6 +33,7 @@ public class Player : MonoBehaviour
 
     KinectManager kinectManager;
     SimpleGestureListener sgl;
+    BonusScene bonus;
 
     float wallPoints = 10;
 
@@ -46,6 +47,7 @@ public class Player : MonoBehaviour
         r = GetComponent<Rigidbody>();
         r.AddForce(new Vector3(0, 0, speed));
         sgl = GameObject.Find("Main Camera").GetComponent<SimpleGestureListener>();
+        bonus = GameObject.Find("GameHandler").GetComponent<BonusScene>();
         UI.UpdateText(0, "Score: " + score);
        // UI.UpdateText(1, "Lives: " + lives);
         startPosition = transform.position;
@@ -220,6 +222,6 @@ public class Player : MonoBehaviour
     internal void Circle()
     {
         Debug.Log("Circle detected !");
-        SceneManager.LoadScene(2);
+        bonus.TurnOnBonus();        
     }
 }
