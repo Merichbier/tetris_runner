@@ -68,6 +68,7 @@ public class SimpleGestureListener : MonoBehaviour, KinectGestures.GestureListen
         if (gesture == KinectGestures.Gestures.Click)
             sGestureText += string.Format(" at ({0:F1}, {1:F1})", screenPos.x, screenPos.y);
         Debug.Log(sGestureText);
+        /*
         if (gesture == KinectGestures.Gestures.SwipeLeft || gesture == KinectGestures.Gestures.SwipeRight)
         {
             GameObject.Find("Player").GetComponent<Player>().Swipe();
@@ -78,7 +79,7 @@ public class SimpleGestureListener : MonoBehaviour, KinectGestures.GestureListen
         {
             GameObject.Find("Player").GetComponent<Player>().Jump();
         }
-
+        */
         if (GestureInfo != null)
             GestureInfo.text = sGestureText;
 

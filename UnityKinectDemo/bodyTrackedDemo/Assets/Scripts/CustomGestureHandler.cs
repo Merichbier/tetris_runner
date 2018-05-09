@@ -185,10 +185,7 @@ public class CustomGestureHandler : MonoBehaviour
                 punchReady = false;
                 punchCounter = 0;
                 player.Punch();
-                if (debug)
-                {
-                    custom2.text = "Did Punch ? Punched ";
-                }
+
                 if (startUI != null)
                 {
                     startUI.detectPunch();

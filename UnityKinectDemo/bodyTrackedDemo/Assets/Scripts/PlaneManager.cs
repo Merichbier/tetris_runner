@@ -34,7 +34,7 @@ public class PlaneManager : MonoBehaviour
         characterTransform = GameObject.FindGameObjectWithTag("Character").transform;
         if (characterTransform.position.z > spawnZ - (groundNumScreen - 1) * groundLength + THRESHOLD)
         {
-            Debug.Log(characterTransform.position.z + " > " + (spawnZ - groundNumScreen * groundLength + THRESHOLD));
+            //Debug.Log(characterTransform.position.z + " > " + (spawnZ - groundNumScreen * groundLength + THRESHOLD));
             spawnGround();
             deleteGround();
         }

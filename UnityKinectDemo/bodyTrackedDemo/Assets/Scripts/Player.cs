@@ -32,7 +32,7 @@ public class Player : MonoBehaviour
     Vector3 startPosition;
 
     KinectManager kinectManager;
-    SimpleGestureListener sgl;
+   // SimpleGestureListener sgl;
     BonusScene bonus;
 
     float wallPoints = 10;
@@ -46,7 +46,7 @@ public class Player : MonoBehaviour
     {
         r = GetComponent<Rigidbody>();
         r.AddForce(new Vector3(0, 0, speed));
-        sgl = GameObject.Find("Main Camera").GetComponent<SimpleGestureListener>();
+        //sgl = GameObject.Find("Main Camera").GetComponent<SimpleGestureListener>();
         bonus = GameObject.Find("GameHandler").GetComponent<BonusScene>();
         UI.UpdateText(0, "Score: " + score);
        // UI.UpdateText(1, "Lives: " + lives);
@@ -55,9 +55,10 @@ public class Player : MonoBehaviour
         health = maxHealth;
 
         sceneName = SceneManager.GetActiveScene().name;
-
-        healthBarFill = GameObject.Find("HealthBarFill").GetComponent<Image>();
-        energyBarFill = GameObject.Find("EnergyBarFill").GetComponent<Image>();
+        if (sceneName != "Start") { 
+            healthBarFill = GameObject.Find("HealthBarFill").GetComponent<Image>();
+            energyBarFill = GameObject.Find("EnergyBarFill").GetComponent<Image>();
+        }
 
     }
 
@@ -88,6 +89,7 @@ public class Player : MonoBehaviour
         {
             Coin coin = other.gameObject.GetComponent<Coin>();
             UpdateScore(coin.GetPoints(), true);
+            coin.HideCoin();
         }
     }
 
@@ -160,11 +162,6 @@ public class Player : MonoBehaviour
         energyBarFill.fillAmount = energy / maxEnergy;
     }
 
-    public void Swipe()
-    {
-
-
-    }
 
     public void Jump()
     {
@@ -204,7 +201,7 @@ public class Player : MonoBehaviour
             }
             else
             {
-                Debug.Log("Missed");
+                //Debug.Log("Missed");
             }
         }
     }

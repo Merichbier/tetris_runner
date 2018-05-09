@@ -46,7 +46,7 @@ public class GestureListener : MonoBehaviour, KinectGestures.GestureListenerInte
 		{
 			GestureInfo.GetComponent<GUIText>().text = sGestureText;
 		}
-
+/*
         if (gesture == KinectGestures.Gestures.SwipeLeft || gesture == KinectGestures.Gestures.SwipeRight)
         {
             GameObject.Find("Player").GetComponent<Player>().Swipe();
@@ -56,7 +56,7 @@ public class GestureListener : MonoBehaviour, KinectGestures.GestureListenerInte
         {
             GameObject.Find("Player").GetComponent<Player>().Jump();
         }
-
+        */
         return true;
 	}
 
