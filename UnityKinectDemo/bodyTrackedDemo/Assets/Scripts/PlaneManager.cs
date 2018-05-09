@@ -13,7 +13,7 @@ public class PlaneManager : MonoBehaviour
 
     private List<GameObject> activeGrounds;
     private int nextToSpawn = 0;
-    private float terrainYOffset = -8.75f;
+    private float terrainYOffset = 0;// -8.75f;
     private int THRESHOLD = 5;
 
     // Use this for initialization
@@ -46,7 +46,9 @@ public class PlaneManager : MonoBehaviour
         go = Instantiate(groundPrefabs[nextToSpawn]) as GameObject;
         nextToSpawn = (nextToSpawn + 1) % groundPrefabs.Length;
         go.transform.SetParent(transform);
-        go.transform.position = new Vector3(-groundLength / 2, terrainYOffset, spawnZ);//characterTransform.forward * spawnZ;
+        //go.transform.position = new Vector3(-groundLength / 2, terrainYOffset, spawnZ);//characterTransform.forward * spawnZ;
+        go.transform.position = new Vector3(0, terrainYOffset, spawnZ);//characterTransform.forward * spawnZ;
+
         spawnZ += groundLength;
         activeGrounds.Add(go);
     }

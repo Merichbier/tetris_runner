@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
     Rigidbody r;
 
     public bool canMove;
-    public bool demo;
+
     float hitDistance = 10;
     float jumpForce = 150;
     Vector3 startPosition;
@@ -37,6 +37,8 @@ public class Player : MonoBehaviour
     float wallPoints = 10;
 
     bool inFuryMode;
+
+    string sceneName;
     
     // Use this for initialization
     void Start()
@@ -49,6 +51,12 @@ public class Player : MonoBehaviour
         startPosition = transform.position;
         kinectManager = GameObject.Find("Main Camera").GetComponent<KinectManager>();
         health = maxHealth;
+
+        sceneName = SceneManager.GetActiveScene().name;
+
+        healthBarFill = GameObject.Find("HealthBarFill").GetComponent<Image>();
+        energyBarFill = GameObject.Find("EnergyBarFill").GetComponent<Image>();
+
     }
 
     void OnCollisionEnter(Collision collision)
@@ -76,8 +84,8 @@ public class Player : MonoBehaviour
         }
         if (other.gameObject.tag == "Coin")
         {
-            UpdateScore(other.gameObject.GetComponent<Coin>().GetPoints(), true);
-            Destroy(other.gameObject);
+            Coin coin = other.gameObject.GetComponent<Coin>();
+            UpdateScore(coin.GetPoints(), true);
         }
     }
 
@@ -109,6 +117,9 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (sceneName == "Start") {
+            return;
+        }
         /*
          float index = -2;
          for (int i = 0; i < 8; i++)

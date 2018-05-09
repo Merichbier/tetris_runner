@@ -151,7 +151,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 9431079}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 14676d3c38ad6a441863d8fc084084c1, type: 3}
+  m_Script: {fileID: 0}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &22331149
@@ -543,7 +543,7 @@ GameObject:
   - component: {fileID: 837260395}
   - component: {fileID: 837260394}
   m_Layer: 5
-  m_Name: BarFill
+  m_Name: HealthBarFill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -677,7 +677,7 @@ GameObject:
   - component: {fileID: 883988090}
   - component: {fileID: 883988089}
   m_Layer: 5
-  m_Name: BarFill
+  m_Name: EnergyBarFill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -880,6 +880,20 @@ Prefab:
       propertyPath: m_TagString
       value: Character
       objectReference: {fileID: 0}
+    - target: {fileID: 1840546462668558, guid: 7ec49470793da1a489dc206f5747aa36, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114152076980941334, guid: 7ec49470793da1a489dc206f5747aa36,
+        type: 2}
+      propertyPath: canMove
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 54209929254861766, guid: 7ec49470793da1a489dc206f5747aa36,
+        type: 2}
+      propertyPath: m_UseGravity
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7ec49470793da1a489dc206f5747aa36, type: 2}
   m_IsPrefabParent: 0
@@ -965,7 +979,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1800089205}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.774, y: -2.6531973, z: 3.2547169}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

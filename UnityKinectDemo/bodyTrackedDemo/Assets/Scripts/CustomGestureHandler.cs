@@ -119,10 +119,7 @@ public class CustomGestureHandler : MonoBehaviour
             clapCount = 0;
             clapReady = true;
             clapTouch = false;
-            if (debug)
-            {
-                custom.text = "Did Clap ? ";
-            }
+
             if (startUI != null)
             {
                 startUI.detectClap();

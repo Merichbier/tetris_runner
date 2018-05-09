@@ -27,11 +27,8 @@ public class CoinSpawner : MonoBehaviour {
             GameObject coin = GameObject.Instantiate(Resources.Load("Coin")) as GameObject;
             coin.transform.position = new Vector3(x+xOffset, yOffset, i * coinSpacing);
             coin.transform.parent = coinParent.transform;
+            coin.GetComponent<Coin>().SetTotalCoins(numCoins);
         }
     }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
 }

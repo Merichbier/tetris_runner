@@ -22,26 +22,6 @@ public class StartUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*
-        switch (mode)
-        {
-            case 0:
-                {
-                    detectPunch();
-                    break;
-                }
-            case 1:
-                {
-                    detectSplash();
-                    break;
-                }
-            case 2:
-                {
-                    detectCircle();
-                    break;
-                }
-        }
-        */
         if (Input.GetKey("down"))
         {
             SceneManager.LoadScene(1); // 0 (start) -> 1(main)
@@ -50,18 +30,24 @@ public class StartUI : MonoBehaviour
 
     public void detectPunch()
     {
-        mode = 1;
-        ds.SetText(dsText[mode]);
+        if (mode == 0) { 
+            mode = 1;
+            ds.SetText(dsText[mode]);
+        }
     }
 
     public void detectClap()
     {
-        mode = 2;
-        ds.SetText(dsText[mode]);
+        if (mode == 1) { 
+            mode = 2;
+            ds.SetText(dsText[mode]);
+        }
     }
 
     public void detectCircle()
     {
-        SceneManager.LoadScene(1);
+        if (mode == 2) { 
+            SceneManager.LoadScene(1);
+        }
     }
 }
