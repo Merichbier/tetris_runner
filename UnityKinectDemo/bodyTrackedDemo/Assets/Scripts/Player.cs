@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
 
     float energy;
     float maxEnergy=10;
-    float energyGainAmount = 0.1f; //0.1 energy gained per second
+    float energyGainAmount = 0.5f; //0.1 energy gained per second
 
     Image healthBarFill;
     Image energyBarFill;
@@ -40,7 +40,15 @@ public class Player : MonoBehaviour
     bool inFuryMode;
 
     string sceneName;
-    
+
+    bool canPunchWall;
+
+
+    ParticleSystem dust;
+    ParticleSystem beams;
+    Behaviour halo;
+
+
     // Use this for initialization
     void Start()
     {
@@ -48,7 +56,7 @@ public class Player : MonoBehaviour
         r.AddForce(new Vector3(0, 0, speed));
         //sgl = GameObject.Find("Main Camera").GetComponent<SimpleGestureListener>();
         bonus = GameObject.Find("GameHandler").GetComponent<BonusScene>();
-        UI.UpdateText(0, "Score: " + score);
+
        // UI.UpdateText(1, "Lives: " + lives);
         startPosition = transform.position;
         kinectManager = GameObject.Find("Main Camera").GetComponent<KinectManager>();
@@ -60,6 +68,16 @@ public class Player : MonoBehaviour
             energyBarFill = GameObject.Find("EnergyBarFill").GetComponent<Image>();
         }
 
+        halo = (Behaviour)GameObject.Find("Halo").GetComponent("Halo");
+
+
+
+        dust = GameObject.Find("FuryAura").GetComponentsInChildren<ParticleSystem>()[0];
+        beams = GameObject.Find("FuryAura").GetComponentsInChildren<ParticleSystem>()[1];
+
+        dust.Pause();
+        beams.Pause();
+
     }
 
     void OnCollisionEnter(Collision collision)
@@ -67,7 +85,9 @@ public class Player : MonoBehaviour
         if (collision.gameObject.tag == "Wall")
         {
             Destroy(collision.gameObject);
-            RemoveLife();
+            if (!inFuryMode) { 
+                RemoveLife();
+            }
         }
         /*
         if (collision.gameObject.tag == "Wall_Hole")
@@ -108,7 +128,6 @@ public class Player : MonoBehaviour
         {
             score = f;
         }
-        UI.UpdateText(0, "Score: " + Mathf.Round(score));
     }
 
     /*
@@ -118,9 +137,43 @@ public class Player : MonoBehaviour
         Debug.DrawRay(origin, direction * hitDistance, Color.yellow);
         */
 
+
+    void DetectWall()
+    {
+        float index = -2;
+        for (int i = 0; i < 8; i++)
+        {
+            RaycastHit hit;
+
+            Vector3 offset = new Vector3(index, 1.4f, 0);
+            Vector3 origin = transform.position + offset;
+            Vector3 direction = transform.TransformDirection(Vector3.forward);
+            index += 0.5f;
+
+            if (Physics.Raycast(origin, direction, out hit, hitDistance))
+            {
+                if (hit.transform.tag == "Wall")
+                {
+                    canPunchWall = true;
+                    break;
+                }
+                else
+                {
+                    canPunchWall = false;
+                }                
+            } else
+            {
+                canPunchWall = false;
+            }
+        }
+        UI.SetPunchIcon(canPunchWall);
+    }
+
+
     // Update is called once per frame
     void Update()
     {
+        DetectWall();
         if (sceneName == "Start") {
             return;
         }
@@ -137,7 +190,7 @@ public class Player : MonoBehaviour
          */
         if (health > 0 && canMove)// && kinectManager.IsUserDetected())
         {
-
+            
             if (r.velocity.z < maxSpeed)
             {
                 r.AddRelativeForce(Vector3.forward * speed);
@@ -148,10 +201,8 @@ public class Player : MonoBehaviour
         else
         {
             speed = 0;
-            UI.UpdateText(3, "GAME OVER !");
         }
-
-        UI.UpdateText(2, "Speed: " + Mathf.Round(r.velocity.magnitude));
+        
         UpdateUiBars();
         energy += Time.deltaTime * energyGainAmount;
     }
@@ -173,6 +224,29 @@ public class Player : MonoBehaviour
         if (!inFuryMode)
         {
             inFuryMode = true;
+            halo.enabled = true;
+            dust.Play();
+            beams.Play();
+        }
+    }
+
+    public void ExitFuryMode()
+    {
+        if (inFuryMode)
+        {
+            inFuryMode = false;
+            halo.enabled = false;
+            dust.Clear();
+            beams.Clear();
+
+            dust.Pause();
+            beams.Pause();
+        }
+    }
+
+    void HandleFury() {
+        if (inFuryMode)
+        {
         }
     }
 
@@ -210,9 +284,9 @@ public class Player : MonoBehaviour
     public void Clap()
     {
         Debug.Log("Clapped");
-        if (energy >= maxEnergy) {
+        if (energy >= maxEnergy || SceneManager.GetActiveScene().name=="Start") {
             EnterFuryMode();
-        }
+        } 
     }
 
     //Enter the bonus scene

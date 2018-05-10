@@ -57,9 +57,11 @@ public class BonusScene : MonoBehaviour {
     }
 
     void Update () {
+        /*
         if (Input.GetKeyDown(KeyCode.K)) {
             TurnOnBonus();
         }
+        */
         if (bonusEnabled) { 
             counter += Time.deltaTime;
             barFill.fillAmount = (bonusTime - counter) / bonusTime;

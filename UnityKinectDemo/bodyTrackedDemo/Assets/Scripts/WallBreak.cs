@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 using Parabox.CSG;
 
 public class WallBreak : MonoBehaviour {
@@ -9,8 +8,16 @@ public class WallBreak : MonoBehaviour {
     int numBreaks = 5;
 
 
-	// Use this for initialization
-	public void BreakWall () {
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            BreakWall();
+        }
+    }
+
+    // Use this for initialization
+    public void BreakWall () {
         if (numBreaks <= 0)
         {
             return;
@@ -20,12 +27,12 @@ public class WallBreak : MonoBehaviour {
         hole.transform.parent = transform;
 
         //if this doesnt work, might depend on orientation (replace x with z)
-        float x = 0;
+        float z = 0;
 
         float spread = 0.5f;
 
         float y = Random.Range(-spread,spread);
-        float z = Random.Range(-spread,spread);
+        float x = Random.Range(-spread,spread);
 
         Vector3 offset = new Vector3(x, y, z);
 
