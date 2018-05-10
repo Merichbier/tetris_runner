@@ -11,6 +11,12 @@ TagManager:
   - Terrain2
   - Terrain3
   - Terrain4
+  - Description
+  - EnemyManager
+  - PlaneManager
+  - WallManager
+  - Coin
+  - Enemy
   layers:
   - Default
   - TransparentFX

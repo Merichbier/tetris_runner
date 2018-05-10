@@ -6,7 +6,7 @@ public class WallManager : MonoBehaviour
 {
 
     public GameObject[] WallPrefabs;
-    private float sleepTime;
+    private const float sleepTime=5;
     private float sleepTimeLeft;
 
     private Transform characterTransform;
@@ -17,52 +17,47 @@ public class WallManager : MonoBehaviour
     void Start()
     {
         Debug.Log("walltest");
-        sleepTime = 100;
-        sleepTimeLeft = sleepTime;
+        //sleepTimeLeft = sleepTime;
         //Debug.Log("start/ sleepTimeLeft = " + sleepTimeLeft);
         activeWalls = new List<GameObject>();
         characterTransform = GameObject.FindGameObjectWithTag("Character").transform;
-
     }
 
     // Update is called once per frame
     void Update()
-    {
-        characterTransform = GameObject.FindGameObjectWithTag("Character").transform;
-        /*
-         * Debug.Log("sleepTimeLeft = " + sleepTimeLeft);
-        if (sleepTimeLeft > 0) sleepTimeLeft -= 1.0f;
+    {        
+        if (sleepTimeLeft > 0) sleepTimeLeft -= Time.deltaTime;
         else
         {
             spawnWall();
         }
-        checkWall();
-        */
-
+        checkWall(); 
     }
 
     public void spawnWall(int prefabIndex = -1)
     {
-        Debug.Log("Spawn Wall");
+      //  Debug.Log("Spawn Wall");
         GameObject go;
         go = Instantiate(WallPrefabs[0]) as GameObject;
         go.transform.SetParent(transform);
         go.transform.position = characterTransform.forward * characterTransform.position.z;
-        go.transform.position += new Vector3(3, WallPrefabs[0].transform.localScale.y / 2, 10);
+        go.transform.position += new Vector3(0, WallPrefabs[0].transform.localScale.y / 2, 40);
         activeWalls.Add(go);
         sleepTimeLeft = sleepTime;
-        Debug.Log("Reset = " + sleepTimeLeft);
+//        Debug.Log("Reset = " + sleepTimeLeft);
     }
 
-    public void checkWall()
+    void checkWall()
     {
         if (activeWalls.Count != 0)
-        {
-            if (activeWalls[0].transform.position.z < characterTransform.position.z - 10)
-            {
-                Debug.Log("DELETE---  character: " + characterTransform.position.z + " / wall: " + activeWalls[0].transform.position.z);
-                Destroy(activeWalls[0]);
-                activeWalls.RemoveAt(0);
+        {            
+            if (activeWalls[0] != null) {
+                if (activeWalls[0].transform.position.z < characterTransform.position.z - 10)
+                {
+                    Debug.Log("DELETE---  character: " + characterTransform.position.z + " / wall: " + activeWalls[0].transform.position.z);
+                    Destroy(activeWalls[0]);
+                    activeWalls.RemoveAt(0);
+                }
             }
         }
     }

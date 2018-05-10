@@ -1645,7 +1645,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1182911545188950}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.968, z: 0}
+  m_LocalPosition: {x: 0, y: 1.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4305863351742638}
@@ -2849,7 +2849,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 114
   m_CollisionDetection: 0
 --- !u!81 &81513113250359384
 AudioListener:
@@ -2920,9 +2920,9 @@ MonoBehaviour:
   TwoUsers: 0
   ComputeUserMap: 1
   ComputeColorMap: 0
-  DisplayUserMap: 1
+  DisplayUserMap: 0
   DisplayColorMap: 0
-  DisplaySkeletonLines: 1
+  DisplaySkeletonLines: 0
   DisplayMapsWidthPercent: 20
   SensorHeight: 1
   SensorAngle: 15
@@ -2996,7 +2996,7 @@ Halo:
   m_Enabled: 0
   m_Color:
     serializedVersion: 2
-    rgba: 4278202688
+    rgba: 4278209378
   m_Size: 1
 --- !u!124 &124852774833394866
 Behaviour:

@@ -7,12 +7,11 @@ public class WallBreak : MonoBehaviour {
 
     int numBreaks = 5;
 
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.K))
         {
-            BreakWall();
+            Shatter();
         }
     }
 
@@ -99,6 +98,68 @@ public class WallBreak : MonoBehaviour {
         wireframeMesh.uv = uv;
 
         go.GetComponent<MeshFilter>().sharedMesh = wireframeMesh;
+    }
+
+    int rows = 10;
+    int columns = 6;
+    Vector3 unitVector = new Vector3(1, 1, 1);
+    float blockScale = 1f;
+    float yOffset = 0.05f;
+    float xOffset = 0;
+
+    // Use this for initialization
+    void Shatter()
+    {
+        Debug.Log("Shatter");
+        float orgZ = transform.position.z;
+        Destroy(gameObject);
+        GameObject parentObj = new GameObject("WallShatter");
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < columns; j++)
+            {
+                GameObject g = GameObject.Instantiate(Resources.Load("WallPiece")) as GameObject;
+                g.transform.position = transform.position;
+                g.transform.parent = parentObj.transform;
+                g.transform.position = new Vector3(i * blockScale + xOffset, j * blockScale + yOffset, 0);
+                g.transform.localScale = unitVector * blockScale;
+                g.name = "WallPiece" + i + "_" + j;
+            }
+        }
+
+        GameObject gSphere = GameObject.Instantiate(Resources.Load("InvisibleSphere")) as GameObject;
+        gSphere.transform.parent = parentObj.transform;
+        gSphere.transform.position = Vector3.zero;
+        /*
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < columns; j++)
+            {
+                GameObject g = GameObject.Find("WallPiece" + i + "_" + j);
+                Rigidbody r = g.GetComponent<Rigidbody>();
+                r.constraints = RigidbodyConstraints.None;
+            }
+        }
+        */
+        parentObj.transform.position += new Vector3(-4.4f, -3f, orgZ);
+
+        
+        //StartCoroutine(TurnOnGravity());
+
+    }
+
+    IEnumerator TurnOnGravity()
+    {
+        yield return new WaitForSeconds(3);
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < columns; j++)
+            {
+                GameObject g = GameObject.Find("WallPiece" + i + "_" + j);
+                Rigidbody r = g.GetComponent<Rigidbody>();
+                r.useGravity = true;
+            }
+        }
     }
 
 }

@@ -3,19 +3,17 @@ using System.Collections;
 using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class Player : MonoBehaviour
 {
-
-   
     float health;
-    float maxHealth=5;
+    float maxHealth=3;
 
     float energy;
     float maxEnergy=10;
-    float energyGainAmount = 0.5f; //0.1 energy gained per second
-    float energyLossAmount = 2.5f; //0.1 energy gained per second
-
+    float energyGainAmount = 0.5f; 
+    float energyLossAmount = 2.5f; 
 
     Image healthBarFill;
     Image energyBarFill;
@@ -24,6 +22,9 @@ public class Player : MonoBehaviour
     float maxSpeed = 7;
 
     float score;
+
+    TextMeshProUGUI gameOverText;
+    TextMeshProUGUI scoreText;
 
     Rigidbody r;
 
@@ -34,7 +35,6 @@ public class Player : MonoBehaviour
     Vector3 startPosition;
 
     KinectManager kinectManager;
-   // SimpleGestureListener sgl;
     BonusScene bonus;
 
     float wallPoints = 10;
@@ -45,11 +45,12 @@ public class Player : MonoBehaviour
 
     bool canPunchWall;
 
-
     ParticleSystem dust;
     ParticleSystem beams;
     Behaviour halo;
 
+    bool increaseBarAlpha;
+    bool furyModeReady;
 
     // Use this for initialization
     void Start()
@@ -72,32 +73,31 @@ public class Player : MonoBehaviour
 
         halo = (Behaviour)GameObject.Find("Halo").GetComponent("Halo");
 
-
-
         dust = GameObject.Find("FuryAura").GetComponentsInChildren<ParticleSystem>()[0];
         beams = GameObject.Find("FuryAura").GetComponentsInChildren<ParticleSystem>()[1];
 
         dust.Pause();
         beams.Pause();
 
+        gameOverText = GameObject.Find("GameOver").GetComponent<TextMeshProUGUI>();
+        scoreText = GameObject.Find("TotalScore").GetComponent<TextMeshProUGUI>();
+
     }
+
+    float healthLossCooldown; //prevent wall collision removing more than 1 health
+    float healthLossCooldownMax = 1;
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Wall")
+        if (collision.gameObject.tag == "Wall" || collision.gameObject.tag == "Enemy" && healthLossCooldown <= 0)
         {
             Destroy(collision.gameObject);
-            if (!inFuryMode) { 
+            if (!inFuryMode)
+            {
                 RemoveLife();
+                healthLossCooldown = healthLossCooldownMax;
             }
         }
-        /*
-        if (collision.gameObject.tag == "Wall_Hole")
-        {
-            UpdateScore(wallPoints, true);
-            Destroy(collision.gameObject);
-        }
-        */
     }
 
     void OnTriggerEnter(Collider other)
@@ -172,8 +172,7 @@ public class Player : MonoBehaviour
     }
 
 
-    bool increaseBarAlpha;
-    bool furyModeReady;
+    
 
 
     void EnergyBarAnimation() {
@@ -213,49 +212,77 @@ public class Player : MonoBehaviour
 
     }
 
+    /*
+ float index = -2;
+ for (int i = 0; i < 8; i++)
+ {
+     Vector3 offset = new Vector3(index, 1.4f, 0);
+     Vector3 origin = transform.position + offset;
+     Vector3 direction = transform.TransformDirection(Vector3.forward*hitDistance);
+     Debug.DrawRay(origin, direction,Color.red);
+     index += 0.5f;
+ }
+ */
+
+    void HealthLossCooldownPeriod()
+    {
+        if (healthLossCooldown > 0)
+        {
+            healthLossCooldown -= Time.deltaTime;
+            if (healthLossCooldown <= 0)
+            {
+                healthLossCooldown = 0;
+            }
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
         EnergyBarAnimation();
         DetectWall();
+        
         if (sceneName == "Start") {
             return;
         }
-        /*
-         float index = -2;
-         for (int i = 0; i < 8; i++)
-         {
-             Vector3 offset = new Vector3(index, 1.4f, 0);
-             Vector3 origin = transform.position + offset;
-             Vector3 direction = transform.TransformDirection(Vector3.forward*hitDistance);
-             Debug.DrawRay(origin, direction,Color.red);
-             index += 0.5f;
-         }
-         */
+
         if (health > 0 && canMove)// && kinectManager.IsUserDetected())
         {
-            
+            HealthLossCooldownPeriod();
             if (r.velocity.z < maxSpeed)
             {
                 r.AddRelativeForce(Vector3.forward * speed);
             }
             UpdateScore(Vector3.Distance(transform.position, startPosition), false);
-
         }
         else
         {
-            speed = 0;
+            Die();
         }
         
         UpdateUiBars();
+        HandleEnergy();
+    }
+
+    void HandleEnergy() {
         energy += Time.deltaTime * energyGainAmount;
-        if (inFuryMode && energy > 0) {
+        if (inFuryMode && energy > 0)
+        {
             energy -= Time.deltaTime * energyLossAmount;
-            if (energy <= 0) {
+            if (energy <= 0)
+            {
                 energy = 0;
                 ExitFuryMode();
             }
         }
+    }
+
+    void Die()
+    {
+        speed = 0;
+        gameOverText.enabled = true;
+        scoreText.text = "You scored " + Math.Round(score) + " points";
+        scoreText.enabled = true;
     }
 
 
@@ -263,7 +290,6 @@ public class Player : MonoBehaviour
         healthBarFill.fillAmount = health / maxHealth;
         energyBarFill.fillAmount = energy / maxEnergy;
     }
-
 
     public void Jump()
     {
@@ -299,13 +325,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    void HandleFury() {
-        if (inFuryMode)
-        {
-        }
-    }
-
-    public void Punch()
+      public void Punch()
     {
         Debug.Log("Punched");
 
