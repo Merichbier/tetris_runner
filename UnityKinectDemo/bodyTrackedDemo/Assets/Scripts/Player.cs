@@ -9,11 +9,13 @@ public class Player : MonoBehaviour
 
    
     float health;
-    float maxHealth=10;
+    float maxHealth=5;
 
     float energy;
     float maxEnergy=10;
     float energyGainAmount = 0.5f; //0.1 energy gained per second
+    float energyLossAmount = 2.5f; //0.1 energy gained per second
+
 
     Image healthBarFill;
     Image energyBarFill;
@@ -170,9 +172,51 @@ public class Player : MonoBehaviour
     }
 
 
+    bool increaseBarAlpha;
+    bool furyModeReady;
+
+
+    void EnergyBarAnimation() {
+        furyModeReady = energy >= maxEnergy;
+
+        if (furyModeReady || inFuryMode)
+        {
+
+            if (!increaseBarAlpha && energyBarFill.color.a >= 0)
+            {
+                Color c = energyBarFill.color;
+                c.a -= Time.deltaTime;
+                energyBarFill.color = c;
+            }
+            else if (increaseBarAlpha && energyBarFill.color.a <= 1)
+            {
+                Color c = energyBarFill.color;
+                c.a += Time.deltaTime;
+                energyBarFill.color = c;
+            }
+
+            if (energyBarFill.color.a <= 0)
+            {
+                increaseBarAlpha = true;
+                Color c = energyBarFill.color;
+                c.a = 0;
+                energyBarFill.color = c;
+            }
+            else if (energyBarFill.color.a >= 1)
+            {
+                increaseBarAlpha = false;
+                Color c = energyBarFill.color;
+                c.a = 1;
+                energyBarFill.color = c;
+            }
+        }
+
+    }
+
     // Update is called once per frame
     void Update()
     {
+        EnergyBarAnimation();
         DetectWall();
         if (sceneName == "Start") {
             return;
@@ -205,6 +249,13 @@ public class Player : MonoBehaviour
         
         UpdateUiBars();
         energy += Time.deltaTime * energyGainAmount;
+        if (inFuryMode && energy > 0) {
+            energy -= Time.deltaTime * energyLossAmount;
+            if (energy <= 0) {
+                energy = 0;
+                ExitFuryMode();
+            }
+        }
     }
 
 
@@ -241,6 +292,10 @@ public class Player : MonoBehaviour
 
             dust.Pause();
             beams.Pause();
+
+            Color c = energyBarFill.color;
+            c.a = 1;
+            energyBarFill.color = c;
         }
     }
 

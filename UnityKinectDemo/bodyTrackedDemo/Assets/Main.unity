@@ -784,6 +784,20 @@ Prefab:
       propertyPath: DisplayUserMap
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 122294763507176426, guid: 7ec49470793da1a489dc206f5747aa36,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 122294763507176426, guid: 7ec49470793da1a489dc206f5747aa36,
+        type: 2}
+      propertyPath: m_Color.rgba
+      value: 4278209378
+      objectReference: {fileID: 0}
+    - target: {fileID: 4201331641927788, guid: 7ec49470793da1a489dc206f5747aa36, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 1.4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7ec49470793da1a489dc206f5747aa36, type: 2}
   m_IsPrefabParent: 0
