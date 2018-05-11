@@ -66,7 +66,8 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.tag == "Wall")
         {
-            Destroy(collision.gameObject);
+            WallSpawn ws = GameObject.Find("WallManager").GetComponent<WallSpawn>();
+            ws.RemoveCollidedWall(collision.gameObject);
             RemoveLife();
         }
         /*

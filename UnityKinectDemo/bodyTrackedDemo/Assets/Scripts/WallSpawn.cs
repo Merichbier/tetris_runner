@@ -7,7 +7,7 @@ using System;
 
 public class WallSpawn : MonoBehaviour
 {
-    public  List<GameObject> wallsPrefabs = new List<GameObject>();
+    public List<GameObject> wallsPrefabs = new List<GameObject>();
     private int indexPrefab = 0;
 
     private static float MinScaleX = 1f;
@@ -63,7 +63,7 @@ public class WallSpawn : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(appearingWall != null)
+        if (appearingWall != null)
             appearingWall.transform.position = Vector3.Slerp(appearingWall.transform.position, finalPosition, APPEARING_SPEED);
         CleanWalls();
     }
@@ -74,12 +74,21 @@ public class WallSpawn : MonoBehaviour
             return;
 
         var player = GameObject.FindGameObjectWithTag("Character").transform;
+        if (walls.Count == 0)
+            return;
+
         GameObject firstWall = walls[0];
         if (player.position.z > firstWall.transform.position.z + PlaneManager.THRESHOLD)
         {
             walls.Remove(firstWall);
             Destroy(firstWall);
         }
+    }
+
+    public void RemoveCollidedWall(GameObject wall)
+    {
+        walls.Remove(wall);
+        Destroy(wall);
     }
 
     private void ComputeSubtract(GameObject wall, GameObject hole)
@@ -167,7 +176,7 @@ public class WallSpawn : MonoBehaviour
         if (height == 0f)
             Debug.Log("Got default value for walls..");
 
-        position.y =  height + PlaneManager.TERRAIN_Y_OFFSET + 0.5f;
+        position.y = height + 0.5f;
 
         finalPosition = position;
     }
