@@ -60,11 +60,24 @@ public class PlaneManager : MonoBehaviour
         activeGrounds.RemoveAt(0);
     }
 
-    public void ChangeMaterial(Material m) {
-        foreach(GameObject g in activeGrounds)
+    public void ChangeMaterial(Material m)
+    {
+        foreach (GameObject g in activeGrounds)
         {
             MeshRenderer mr = g.GetComponent<MeshRenderer>();
             mr.material = m;
         }
+    }
+
+    public static float getHeight(Vector3 position, float defaultValue = 0f)
+    {
+        Terrain[] terrains = Terrain.activeTerrains;
+        if (terrains.Length == 0)
+            return defaultValue;
+
+
+        var index = (int)System.Math.Floor((position.z - terrains[0].transform.position.z) / 100);
+
+        return terrains[index].SampleHeight(position) + PlaneManager.TERRAIN_Y_OFFSET;
     }
 }

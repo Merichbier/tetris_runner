@@ -163,18 +163,11 @@ public class WallSpawn : MonoBehaviour
         wall.transform.position = position;
 
         // Find right terrain height
-        Terrain[] terrains = Terrain.activeTerrains;
-        Debug.Log("There is " + terrains.Length + " Terrains");
-        var index = (int)System.Math.Floor((position.z - terrains[0].transform.position.z) / 100);
+        float height = PlaneManager.getHeight(position);
+        if (height == 0f)
+            Debug.Log("Got default value for walls..");
 
-        Debug.Log("Index is : " + index);
-
-        foreach (Terrain t in terrains)
-        {
-            Debug.Log("Start at " + t.transform.position.z);
-        }
-        Debug.Log("Height was " + terrains[index].SampleHeight(position));
-        position.y = terrains[index].SampleHeight(position) + PlaneManager.TERRAIN_Y_OFFSET + 0.5f;
+        position.y =  height + PlaneManager.TERRAIN_Y_OFFSET + 0.5f;
 
         finalPosition = position;
     }

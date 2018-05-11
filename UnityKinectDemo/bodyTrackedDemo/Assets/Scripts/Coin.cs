@@ -38,9 +38,11 @@ public class Coin : MonoBehaviour {
 
     void Move()
     {
-        Vector3 currPos = transform.position;
-        currPos.z += totalCoins;
-        transform.position = currPos;
+        var position = transform.position;
+        position.z += totalCoins;
+
+        position.y = PlaneManager.getHeight(position) + CoinSpawner.Y_OFFSET;
+        transform.position = position;
     }
 
     public void SetTotalCoins(int t) {

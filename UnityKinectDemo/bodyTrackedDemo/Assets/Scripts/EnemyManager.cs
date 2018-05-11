@@ -20,7 +20,7 @@ public class EnemyManager : MonoBehaviour
     void Start()
     {
         characterTransform = GameObject.FindGameObjectWithTag("Character").transform;
-        var gm = GameObject.FindGameObjectWithTag("PlaneManager").GetComponent<PlaneManager>();
+        var gm = GameObject.FindGameObjectWithTag("TerrainManager").GetComponent<PlaneManager>();
         maxZ = gm.spawnZ;
         gl = gm.groundLength;
         gns = gm.groundNumScreen;
