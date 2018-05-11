@@ -11,6 +11,7 @@ TagManager:
   - Terrain2
   - Terrain3
   - Terrain4
+  - TerrainManager
   layers:
   - Default
   - TransparentFX
