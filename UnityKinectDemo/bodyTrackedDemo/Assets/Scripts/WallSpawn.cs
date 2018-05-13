@@ -58,8 +58,9 @@ public class WallSpawn : MonoBehaviour
             return;
         var player = GameObject.FindGameObjectWithTag("Character").transform;
 
-        foreach (GameObject wall in walls)
+        for(int i= walls.Count-1; i>=0;i--)
         {
+            GameObject wall = walls[i];
             if (player.position.z > wall.transform.position.z + PlaneManager.THRESHOLD)
             {
                 walls.Remove(wall);

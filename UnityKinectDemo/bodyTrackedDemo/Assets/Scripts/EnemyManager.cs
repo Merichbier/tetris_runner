@@ -45,7 +45,9 @@ public class EnemyManager : MonoBehaviour
         if (enemies.Count == 0)
             return;
         var player = GameObject.FindGameObjectWithTag("Character").transform.position;
-        foreach(GameObject enemy in enemies) {
+        for (int i = enemies.Count - 1; i >= 0; i--)
+        {
+            GameObject enemy = enemies[i];
             if (player.z > enemy.transform.position.z + PlaneManager.THRESHOLD)
             {
                 enemies.Remove(enemy);
@@ -65,7 +67,7 @@ public class EnemyManager : MonoBehaviour
             return;
 
         GameObject firstEnemy = enemies[0];
-        if(Vector3.Distance(firstEnemy.transform.position, position)< DESTROY_DISTANCE)
+        if (Vector3.Distance(firstEnemy.transform.position, position) < DESTROY_DISTANCE)
         {
             enemies.Remove(firstEnemy);
             Destroy(firstEnemy);
