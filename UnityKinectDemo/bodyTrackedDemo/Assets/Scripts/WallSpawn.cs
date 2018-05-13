@@ -19,15 +19,14 @@ public class WallSpawn : MonoBehaviour
     private static float MinScaleZ = 0.2f;
     private static float MaxScaleZ = 1f;
 
-    private static float SPAWN_TIME = 3f;
     private static float APPEARING_SPEED = 0.05f;
     private float elapsedTime = 0f;
 
-    private static float SPAWN_OFFSET = 15f;
     private GameObject appearingWall;
     private Vector3 finalPosition;
     private Mesh m;
     private bool done = false;
+    private static float DESTROY_DISTANCE = 5f;
 
     private List<GameObject> walls = new List<GameObject>();
 
@@ -42,22 +41,7 @@ public class WallSpawn : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        //StartCoroutine(TurnOnGravity());
-        StartCoroutine("showWall");
 
-    }
-    IEnumerator TurnOnGravity()
-    {
-        yield return new WaitForSeconds(3);
-        for (int i = 0; i < rows; i++)
-        {
-            for (int j = 0; j < columns; j++)
-            {
-                GameObject g = GameObject.Find("WallPiece" + i + "_" + j);
-                Rigidbody r = g.GetComponent<Rigidbody>();
-                r.useGravity = true;
-            }
-        }
     }
 
     // Update is called once per frame
@@ -70,12 +54,10 @@ public class WallSpawn : MonoBehaviour
 
     private void CleanWalls()
     {
-        if (walls.Count < 1)
-            return;
-
-        var player = GameObject.FindGameObjectWithTag("Character").transform;
         if (walls.Count == 0)
             return;
+        var player = GameObject.FindGameObjectWithTag("Character").transform;
+
 
         GameObject firstWall = walls[0];
         if (player.position.z > firstWall.transform.position.z + PlaneManager.THRESHOLD)
@@ -91,6 +73,19 @@ public class WallSpawn : MonoBehaviour
         Destroy(wall);
     }
 
+    public void TryDestroyWall(Vector3 position)
+    {
+        if (walls.Count == 0)
+            return;
+
+        GameObject firstWall = walls[0];
+        if (Vector3.Distance(firstWall.transform.position, position) < DESTROY_DISTANCE)
+        {
+            walls.Remove(firstWall);
+            Destroy(firstWall);
+        }
+    }
+
     private void ComputeSubtract(GameObject wall, GameObject hole)
     {
 
@@ -101,74 +96,64 @@ public class WallSpawn : MonoBehaviour
     // Not used, can't have a smooth game with it...
     private IEnumerator createWall()
     {
-        while (true)
+        Debug.Log("Start createWall");
+        System.Random rng = new System.Random();
+        GameObject wall = GameObject.Instantiate(Resources.Load("Rock5A")) as GameObject;
+        GameObject hole = GameObject.Instantiate(Resources.Load("Hole0")) as GameObject;
+        if (wall == null)
         {
-            yield return new WaitForSeconds(SPAWN_TIME);
-
-            Debug.Log("Start createWall");
-            System.Random rng = new System.Random();
-            GameObject wall = GameObject.Instantiate(Resources.Load("Rock5A")) as GameObject;
-            GameObject hole = GameObject.Instantiate(Resources.Load("Hole0")) as GameObject;
-            if (wall == null)
-            {
-                Debug.Log("Wall is null");
-            }
-            if (hole == null)
-            {
-                Debug.Log("Hole is null");
-            }
-            // Random Scale of the wall
-            float sx = (float)rng.NextDouble() * (MaxScaleX - MinScaleX);
-            float sy = (float)rng.NextDouble() * (MaxScaleY - MinScaleY);
-            float sz = (float)rng.NextDouble() * (MaxScaleZ - MinScaleZ);
-            wall.transform.localScale = new Vector3(sx, sy, sz);
-            // Find correct y position for the hole
-            // Find right terrain
-            Terrain[] terrains = Terrain.activeTerrains;
-            Debug.Log("There is " + terrains.Length + " Terrains");
-
-            // Subtract objects
-            done = false;
-            ThreadPool.QueueUserWorkItem(delegate { ComputeSubtract(wall, hole); });
-            yield return new WaitUntil(() => { return done; });
-
-            GameObject composite = new GameObject();
-            composite.AddComponent<MeshFilter>().sharedMesh = m;
-            composite.AddComponent<MeshRenderer>().sharedMaterial = wall.GetComponent<MeshRenderer>().sharedMaterial;
-
-
-            // Position it ahead of the player
-            var player = GameObject.FindGameObjectWithTag("Character").transform;
-            composite.transform.position = new Vector3(0f, -5f, player.transform.position.z + SPAWN_OFFSET);
-            // Set texture
-            //Renderer renderer = GetComponent<Renderer>();
-            //renderer.material.settexture("rock5_snow", )
+            Debug.Log("Wall is null");
         }
+        if (hole == null)
+        {
+            Debug.Log("Hole is null");
+        }
+        // Random Scale of the wall
+        float sx = (float)rng.NextDouble() * (MaxScaleX - MinScaleX);
+        float sy = (float)rng.NextDouble() * (MaxScaleY - MinScaleY);
+        float sz = (float)rng.NextDouble() * (MaxScaleZ - MinScaleZ);
+        wall.transform.localScale = new Vector3(sx, sy, sz);
+        // Find correct y position for the hole
+        // Find right terrain
+        Terrain[] terrains = Terrain.activeTerrains;
+        Debug.Log("There is " + terrains.Length + " Terrains");
+
+        // Subtract objects
+        done = false;
+        ThreadPool.QueueUserWorkItem(delegate { ComputeSubtract(wall, hole); });
+        yield return new WaitUntil(() => { return done; });
+
+        GameObject composite = new GameObject();
+        composite.AddComponent<MeshFilter>().sharedMesh = m;
+        composite.AddComponent<MeshRenderer>().sharedMaterial = wall.GetComponent<MeshRenderer>().sharedMaterial;
+
+
+        // Position it ahead of the player
+        var player = GameObject.FindGameObjectWithTag("Character").transform;
+        composite.transform.position = new Vector3(0f, -5f, player.transform.position.z + AdversarySpawner.SPAWN_OFFSET);
+        // Set texture
+        //Renderer renderer = GetComponent<Renderer>();
+        //renderer.material.settexture("rock5_snow", )
     }
 
-    private IEnumerator showWall()
+    public void showWall()
     {
-        while (true)
-        {
-            yield return new WaitForSeconds(SPAWN_TIME);
-            GameObject wall = GameObject.Instantiate(wallsPrefabs[indexPrefab]) as GameObject;
+        GameObject wall = GameObject.Instantiate(wallsPrefabs[indexPrefab]) as GameObject;
+        wall.transform.SetParent(transform);
+        indexPrefab = (new System.Random()).Next(0, wallsPrefabs.Count);
 
-            indexPrefab = indexPrefab++ % wallsPrefabs.Count;
+        appearingWall = wall;
+        PositionWall(wall);
 
-            appearingWall = wall;
-            PositionWall(wall);
-
-            // Keep track of walls
-            walls.Add(wall);
-        }
-
+        // Keep track of walls
+        walls.Add(wall);
     }
 
     private void PositionWall(GameObject wall)
     {
         // Position it ahead of the player
         var player = GameObject.FindGameObjectWithTag("Character").transform;
-        Vector3 position = new Vector3(0f, -5f, player.transform.position.z + SPAWN_OFFSET);
+        Vector3 position = new Vector3(0f, -5f, player.transform.position.z + AdversarySpawner.SPAWN_OFFSET);
         wall.transform.position = position;
 
         // Find right terrain height
@@ -176,7 +161,7 @@ public class WallSpawn : MonoBehaviour
         if (height == 0f)
             Debug.Log("Got default value for walls..");
 
-        position.y = height + 0.5f;
+        position.y = height + AdversarySpawner.EPSILON_SPAWN;
 
         finalPosition = position;
     }

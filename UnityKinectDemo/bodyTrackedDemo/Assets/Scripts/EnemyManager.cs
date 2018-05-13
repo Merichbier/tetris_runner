@@ -1,57 +1,97 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
+    private static float MAX_X = 5f;
+    private static float SPEED_SNOWBALL = 15f;
 
     public GameObject[] enemyPrefabs;
-    private Transform characterTransform;
-    private float maxZ;
-    private float gl;
-    private float gns;
-
-    // waiting time
-    private float sleepTime = 100;
-    private float sleepTimeLeft;
-    private Rigidbody rb;
+    private GameObject currentEnemy;
+    private List<GameObject> enemies = new List<GameObject>();
+    private float LAUCH_ANGLE = 45f;
 
     // Use this for initialization
     void Start()
     {
-        characterTransform = GameObject.FindGameObjectWithTag("Character").transform;
-        var gm = GameObject.FindGameObjectWithTag("TerrainManager").GetComponent<PlaneManager>();
-        maxZ = gm.spawnZ;
-        gl = gm.groundLength;
-        gns = gm.groundNumScreen;
-        sleepTime = 10000;
-
-        spawnEnemy();
-        sleepTimeLeft = sleepTime;
-        //Debug.Log("maxZ: " + maxZ);
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        characterTransform = GameObject.FindGameObjectWithTag("Character").transform;
-        if (sleepTimeLeft > 0) sleepTimeLeft -= 1.0f;
-        else
+        CleanSnowballs();
+        //Move snowball in direction of the player
+        if (currentEnemy == null)
+            return;
+        var player = GameObject.FindGameObjectWithTag("Character").transform.position;
+        // Launch Enemy
+        var rb = currentEnemy.GetComponent<Rigidbody>();
+        var horizontalSpeed = rb.velocity;
+        horizontalSpeed.y = 0;
+        var speed = Vector3.Magnitude(horizontalSpeed);
+        var direction = player - currentEnemy.transform.position;
+        direction.y = 0;
+        direction = Vector3.Normalize(direction) * speed;
+        direction.y = rb.velocity.y;
+        rb.velocity = direction;
+    }
+
+    private void CleanSnowballs()
+    {
+        if (enemies.Count == 0)
+            return;
+        var player = GameObject.FindGameObjectWithTag("Character").transform.position;
+        GameObject firstEnemy = enemies[0];
+        if (player.z > firstEnemy.transform.position.z + PlaneManager.THRESHOLD)
         {
-            spawnEnemy();
-            sleepTimeLeft = sleepTime;
+            enemies.Remove(firstEnemy);
+            Destroy(firstEnemy);
         }
     }
 
-    void spawnEnemy()
+    public void spawnEnemy()
     {
-        GameObject go;
-        go = Instantiate(enemyPrefabs[0]) as GameObject;
-        go.transform.SetParent(transform);
-        go.transform.position = new Vector3(Random.Range(-5, 5), Random.Range(0, 20), characterTransform.position.z + 10);
-        rb = go.GetComponent<Rigidbody>();
-        rb.AddForce(new Vector3(Random.Range(-100, 100), Random.Range(-100, 100), Random.Range(-100, 0)));
-        //Debug.Log("snowball position: " + go.transform.position.ToString());
+        GameObject enemy;
+        enemy = Instantiate(enemyPrefabs[0]) as GameObject;
+        enemy.transform.SetParent(transform);
+
+        // Show it ahead of the player
+        var player = GameObject.Find("joint_Pelvis").transform.position;
+
+        // Random start along X axis
+        float xPosition = (float)(new System.Random()).NextDouble() * MAX_X * 2f - MAX_X;
+        Vector3 position = new Vector3(xPosition, -5f, player.z + AdversarySpawner.SPAWN_OFFSET * 2f);
+        position.y = PlaneManager.getHeight(position) + enemy.GetComponent<SphereCollider>().radius + AdversarySpawner.EPSILON_SPAWN;
+
+        enemy.transform.position = position;
+        currentEnemy = enemy;
+        enemies.Add(enemy);
+
+        // Launch Enemy
+        Vector3 playerXZPos = new Vector3(player.x, enemy.transform.position.y, player.z);
+        enemy.transform.LookAt(playerXZPos);
+
+        var target = player;
+        target.z += 13f;
+        // Kinematic formula
+        float R = Vector3.Distance(enemy.transform.position, target);
+        float G = Physics.gravity.y;
+        float tanAlpha = (float)Math.Tan(LAUCH_ANGLE * Mathf.Deg2Rad);
+        float H = player.y - enemy.transform.position.y;
+
+        // Compute velocity
+
+        float Vz = Mathf.Sqrt(G * R * R / (2f * (H - R * tanAlpha)));
+        float Vy = tanAlpha * Vz;
+
+        var localVelocity = new Vector3(0f, Vy, Vz);
+        var globalVelocity = enemy.transform.TransformDirection(localVelocity);
+
+
+
+        var rb = enemy.GetComponent<Rigidbody>();
+        rb.velocity = globalVelocity;
     }
 }

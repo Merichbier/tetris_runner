@@ -181,30 +181,32 @@ public class Player : MonoBehaviour
     {
         Debug.Log("Punched");
 
-        float index = -2;
-        for (int i = 0; i < 8; i++)
-        {
-            RaycastHit hit;
+        //float index = -2;
+        //for (int i = 0; i < 8; i++)
+        //{
+        //    RaycastHit hit;
 
-            Vector3 offset = new Vector3(index, 1.4f, 0);
-            Vector3 origin = transform.position + offset;
-            Vector3 direction = transform.TransformDirection(Vector3.forward);
-            index += 0.5f;
+        //    Vector3 offset = new Vector3(index, 1.4f, 0);
+        //    Vector3 origin = transform.position + offset;
+        //    Vector3 direction = transform.TransformDirection(Vector3.forward);
+        //    index += 0.5f;
 
-            if (Physics.Raycast(origin, direction, out hit, hitDistance))
-            {
-                if (hit.transform.tag == "Wall")
-                {
-                    hit.transform.gameObject.transform.root.GetComponent<WallBreak>().BreakWall();
-                    Debug.Log("Punched wall");
-                    break;
-                }
-            }
-            else
-            {
-                //Debug.Log("Missed");
-            }
-        }
+        //    if (Physics.Raycast(origin, direction, out hit, hitDistance))
+        //    {
+        //        if (hit.transform.tag == "Wall")
+        //        {
+        //            hit.transform.gameObject.transform.root.GetComponent<WallBreak>().BreakWall();
+        //            Debug.Log("Punched wall");
+        //            break;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        //Debug.Log("Missed");
+        //    }
+        //}
+        var wallManager = GameObject.Find("WallManager").GetComponent<WallSpawn>();
+        wallManager.TryDestroyWall(transform.position);
     }
 
     //Enter fury mode

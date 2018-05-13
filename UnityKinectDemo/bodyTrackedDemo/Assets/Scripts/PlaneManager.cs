@@ -78,6 +78,13 @@ public class PlaneManager : MonoBehaviour
 
         var index = (int)System.Math.Floor((position.z - terrains[0].transform.position.z) / 100);
 
-        return terrains[index].SampleHeight(position) + PlaneManager.TERRAIN_Y_OFFSET;
+        if (index < terrains.Length)
+        {
+            return terrains[index].SampleHeight(position) + PlaneManager.TERRAIN_Y_OFFSET;
+        }
+        else
+        {
+            return defaultValue;
+        }
     }
 }
