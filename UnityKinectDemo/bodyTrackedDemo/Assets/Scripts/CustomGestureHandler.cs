@@ -85,6 +85,11 @@ public class CustomGestureHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (km == null)
+            return;
+        Vector3[] jointsPos = km.GetPlayer1_Pos();
+        if (jointsPos == null)
+            return;
         HandleClap();
         HandlePunch();
         HandleSlaps();

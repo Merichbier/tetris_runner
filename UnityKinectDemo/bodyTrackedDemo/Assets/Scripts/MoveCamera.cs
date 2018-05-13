@@ -16,7 +16,7 @@ public class MoveCamera : MonoBehaviour
     void Start()
     {
         var rot = transform.rotation;
-        rot.x = 15f;
+        //rot.x = 15f;
         transform.rotation = rot;
     }
 
@@ -45,6 +45,8 @@ public class MoveCamera : MonoBehaviour
         {
             kinectManager = KinectManager.Instance;
         }
+        if (kinectManager == null)
+            return;
         // Get the position of the body and store it.
         Vector3 trans = kinectManager.GetUserPosition(kinectManager.Player1);
 
