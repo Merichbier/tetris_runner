@@ -100,7 +100,7 @@ public class CustomGestureHandler : MonoBehaviour
 
         //Debug.Log(String.Format("Left : {0}, Right {1}", slapLeftReady, slapRightReady));
         HandleRightSlap(rightHand, hips);
-        //HandleLeftSlap(leftHand, hips);
+        HandleLeftSlap(leftHand, hips);
     }
 
     private void HandleCircles()
@@ -114,7 +114,7 @@ public class CustomGestureHandler : MonoBehaviour
         Vector3 leftShoulder = jointsPos[leftShoulderIndex];
 
         HandleCircle(rightHand, rightElbow, righShoulder, true);
-        //HandleCircle(leftHand, leftElbow, leftShoulder, false);
+        HandleCircle(leftHand, leftElbow, leftShoulder, false);
     }
 
     void SetText(Text t, string s)
@@ -226,11 +226,11 @@ public class CustomGestureHandler : MonoBehaviour
 
     void HandleRightSlap(Vector3 hand, Vector3 hips)
     {
-
+        //Debug.Log(string.Format("hand : {0}, hips : {1}", hand.x, hips.x));
         bool isRight = hand.x > hips.x;
         bool isLeft = hand.x < hips.x;
         // Reset every variable if right hand on the right
-        if (isRight)
+        if (isRight && !slapRightReady)
         {
             resetRightSlap();
             return;
@@ -243,7 +243,7 @@ public class CustomGestureHandler : MonoBehaviour
             if (!slapRightReady && isLeft)
             {
                 // State 1 of slaping with right hand
-                Debug.Log("Right Slap ready");
+                //Debug.Log("Right Slap ready");
                 slapRightReady = true;
                 return;
             }
@@ -273,7 +273,7 @@ public class CustomGestureHandler : MonoBehaviour
         bool isRight = hand.x > hips.x;
         bool isLeft = hand.x < hips.x;
         // Reset every variable if right hand on the right
-        if (isLeft)
+        if (isLeft && !slapLeftReady)
         {
             resetLeftSlap();
             return;
@@ -284,7 +284,7 @@ public class CustomGestureHandler : MonoBehaviour
             if (!slapLeftReady && isRight)
             {
                 // State 1 of slaping with left hand
-                Debug.Log("Left Slap Ready");
+                //Debug.Log("Left Slap Ready");
                 slapLeftReady = true;
             }
             else if (slapLeftReady && isLeft)
