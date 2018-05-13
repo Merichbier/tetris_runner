@@ -59,7 +59,7 @@ public class WallSpawn : MonoBehaviour
         var player = GameObject.FindGameObjectWithTag("Character").transform;
 
         for (int i = walls.Count - 1; i >= 0; i--)
-        {
+        {   
             GameObject wall = walls[i];
             if (player.position.z > wall.transform.position.z + PlaneManager.THRESHOLD)
             {
@@ -159,7 +159,7 @@ public class WallSpawn : MonoBehaviour
         Vector3 position = new Vector3(0f, -5f, player.transform.position.z + AdversarySpawner.SPAWN_OFFSET);
         wall.transform.position = position;
         var zSize = wall.GetComponentInChildren<MeshCollider>().bounds.extents.z;
-        Debug.Log("Size is :" + zSize);
+        //Debug.Log("Size is :" + zSize);
         // Find right terrain height
         float heightStart = PlaneManager.getHeight(position - new Vector3(0, 0, zSize));
         float heightEnd = PlaneManager.getHeight(position + new Vector3(0, 0, zSize));

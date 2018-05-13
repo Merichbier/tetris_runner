@@ -58,14 +58,17 @@ public class CustomGestureHandler : MonoBehaviour
     int circleStateLeft = 0;
 
     private float punchCounter;
+    private float slapCounterRight;
+    private float slapCounterLeft;
     private float circleCounterRight;
     private float circleCounterLeft;
     private float circleApproximationThreshold = 0.01f;
     private float circleArmThreshold = 0.1f;
 
     //Max time to take when executing a punch
-    private float punchCounterMax = 0.6f;
-    private float circleCounterMax = 1f;
+    private float punchCounterMax = 2f;
+    private float slapCounterMax = 2f;
+    private float circleCounterMax = 8f;
 
     public bool debug;
 
@@ -111,7 +114,7 @@ public class CustomGestureHandler : MonoBehaviour
         Vector3 leftShoulder = jointsPos[leftShoulderIndex];
 
         HandleCircle(rightHand, rightElbow, righShoulder, true);
-        HandleCircle(leftHand, leftElbow, leftShoulder, false);
+        //HandleCircle(leftHand, leftElbow, leftShoulder, false);
     }
 
     void SetText(Text t, string s)
@@ -158,19 +161,20 @@ public class CustomGestureHandler : MonoBehaviour
                     custom.text = "Did Clap ? Clapped";
                 }
             }
+        }
 
-            //failed to clap fast enough
-            if (clapCount > clapCountMax)
+        //failed to clap fast enough
+        if (clapCount > clapCountMax)
+        {
+            clapTouch = false;
+            clapReady = false;
+            clapCount = 0;
+            if (debug)
             {
-                clapTouch = false;
-                clapReady = false;
-                clapCount = 0;
-                if (debug)
-                {
-                    custom.text = "Did Clap ? ";
-                }
+                custom.text = "Did Clap ? ";
             }
         }
+
     }
 
 
@@ -222,46 +226,84 @@ public class CustomGestureHandler : MonoBehaviour
 
     void HandleRightSlap(Vector3 hand, Vector3 hips)
     {
+
         bool isRight = hand.x > hips.x;
         bool isLeft = hand.x < hips.x;
-        Debug.Log(String.Format("Left : {0}, Right {1}", isLeft, isRight));
+        // Reset every variable if right hand on the right
+        if (isRight)
+        {
+            resetRightSlap();
+            return;
+        }
+        slapCounterRight += Time.deltaTime;
 
-        if (!slapRightReady && isLeft)
+        //Debug.Log(String.Format("Left : {0}, Right {1}", isLeft, isRight));
+        if (slapCounterRight < slapCounterMax)
         {
-            // State 1 of slaping with right hand
-            Debug.Log("Right Slap ready");
-            slapRightReady = true;
+            if (!slapRightReady && isLeft)
+            {
+                // State 1 of slaping with right hand
+                Debug.Log("Right Slap ready");
+                slapRightReady = true;
+                return;
+            }
+            if (slapRightReady && isRight)
+            {
+                Debug.Log("RightSlap");
+                resetRightSlap();
+                player.Slap();
+                return;
+            }
         }
-        else if (slapRightReady && isRight)
+        else
         {
-            Debug.Log("RightSlap");
-            slapRightReady = false;
-            player.Slap();
+            resetRightSlap();
         }
-        else if (isRight)
-        {
-            slapRightReady = false;
-        }
+
+    }
+
+    private void resetRightSlap()
+    {
+        slapRightReady = false;
+        slapCounterRight = 0;
     }
 
     void HandleLeftSlap(Vector3 hand, Vector3 hips)
     {
         bool isRight = hand.x > hips.x;
         bool isLeft = hand.x < hips.x;
-
-        if (!slapLeftReady && isRight)
+        // Reset every variable if right hand on the right
+        if (isLeft)
         {
-            // State 1 of slaping with left hand
-            Debug.Log("Left Slap Ready");
-            slapLeftReady = true;
+            resetLeftSlap();
+            return;
         }
-        else if (slapLeftReady && isLeft)
+        slapCounterLeft += Time.deltaTime;
+        if (slapCounterLeft < slapCounterMax)
         {
-            Debug.Log("LeftSlap");
-            slapLeftReady = false;
-            player.Slap();
+            if (!slapLeftReady && isRight)
+            {
+                // State 1 of slaping with left hand
+                Debug.Log("Left Slap Ready");
+                slapLeftReady = true;
+            }
+            else if (slapLeftReady && isLeft)
+            {
+                Debug.Log("LeftSlap");
+                resetLeftSlap();
+                player.Slap();
 
+            }
+        }else
+        {
+            resetLeftSlap();
         }
+    }
+
+    private void resetLeftSlap()
+    {
+        slapLeftReady = false;
+        slapCounterLeft = 0;
     }
 
     void HandleCircle(Vector3 hand, Vector3 elbow, Vector3 shoulder, bool forRightHand)
@@ -295,10 +337,20 @@ public class CustomGestureHandler : MonoBehaviour
         bool isNorthWest = hand.x < shoulder.x
             && hand.y > shoulder.y;
 
+
+        // Reset counter if state is 0
+        circleCounterRight = circleStateRight == 0 ? 0 : circleStateRight;
+        circleCounterLeft = circleStateLeft == 0 ? 0 : circleStateLeft;
+
+        // Increase Counter
         circleCounterRight += forRightHand ? Time.deltaTime : 0;
         circleCounterLeft += forRightHand ? 0 : Time.deltaTime;
+        //Debug.Log("Counter is : " + circleCounterRight);
+
+
         float circleCounter = forRightHand ? circleCounterRight : circleCounterLeft;
         int circleState = forRightHand ? circleStateRight : circleStateLeft;
+        //Debug.Log(String.Format("N : {0}, NE : {1}, E : {2}, SE : {3}, S : {4}, SW : {5}, W : {6}, NW : {7}, state : {8}", isNorth, isNorthEast, isEast, isSouthEast, isSouth, isSouthWest, isWest, isNorthWest, circleStateRight));
         if (circleCounter < circleCounterMax && isArmExtended)
         {
             if ((circleState == 0 && isNorth)
@@ -310,7 +362,7 @@ public class CustomGestureHandler : MonoBehaviour
                 || (circleState == 6 && isWest)
                 || (circleState == 7 && isNorthWest))
             {
-                Debug.Log("CircleState" + (forRightHand ? "Right" : "Left") + " is now : " + (circleState + 1));
+                Debug.Log("CircleState" + (forRightHand ? "Right" : "Left") + " is now : " + (++circleState));
 
                 if (forRightHand)
                 {
@@ -324,7 +376,8 @@ public class CustomGestureHandler : MonoBehaviour
                 }
 
             }
-            else if (circleState == 8)
+
+            if (circleState == 8)
             {
                 player.Circle();
                 if (startUI != null)
@@ -333,6 +386,7 @@ public class CustomGestureHandler : MonoBehaviour
                 }
                 resetCirleSettings("", forRightHand);
             }
+
         }
         else if (!(circleCounter < circleCounterMax) && circleState > 0)
         {
@@ -342,15 +396,11 @@ public class CustomGestureHandler : MonoBehaviour
         {
             resetCirleSettings("arm not exteded", forRightHand);
         }
-        else
-        {
-            resetCirleSettings("State was " + circleState, forRightHand);
-        }
     }
 
     private void resetCirleSettings(string msg, bool forRightHand)
     {
-        //Debug.Log("Circle aborted : " + msg);
+        Debug.Log("Circle aborted : " + msg);
         if (forRightHand)
         {
             circleStateRight = 0;
