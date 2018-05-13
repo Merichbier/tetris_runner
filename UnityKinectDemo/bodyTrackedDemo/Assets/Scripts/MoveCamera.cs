@@ -6,13 +6,18 @@ using UnityEngine;
 public class MoveCamera : MonoBehaviour
 {
     private static int HEAD = 3;
-    private static float OFFSET = 5f;
+    private static float OFFSET_LOOK_AT = 10f;
+    private static float OFFSET_X = 2.5f;
+    private static float OFFSET_Z = 2f;
     // private instance of the KinectManager
     protected KinectManager kinectManager;
 
     // Use this for initialization
     void Start()
     {
+        var rot = transform.rotation;
+        rot.x = 15f;
+        transform.rotation = rot;
     }
 
     // Update is called once per frame
@@ -27,7 +32,7 @@ public class MoveCamera : MonoBehaviour
     {
         var start = transform;
 
-        var newPos = new Vector3(start.position.x, target.position.y + 2.5f, target.position.z - 1.5f);
+        var newPos = new Vector3(start.position.x, target.position.y + OFFSET_X, target.position.z - OFFSET_Z);
         //Debug.Log(string.Format("Char : ({0},{1},{2})", target.position.x, target.position.y, target.position.z));
         //Debug.Log(string.Format("New Pos : ({0},{1},{2})", newPos.x, newPos.y, newPos.z));
         transform.position = newPos;
@@ -46,6 +51,6 @@ public class MoveCamera : MonoBehaviour
         // Change camera position according to 
         //Debug.Log(string.Format("From : {0} -> {1})", transform.position.x, trans.x));
         transform.position = new Vector3(trans.x, transform.position.y, transform.position.z);
-        transform.LookAt(new Vector3(target.position.x, target.position.y, target.position.z + OFFSET));
+        transform.LookAt(new Vector3(target.position.x, target.position.y, target.position.z + OFFSET_LOOK_AT));
     }
 }

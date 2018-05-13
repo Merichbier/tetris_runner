@@ -7,12 +7,12 @@ public class EnemyManager : MonoBehaviour
 {
     private static float MAX_X = 5f;
     private static float SPEED_SNOWBALL = 15f;
-    private static float DESTROY_DISTANCE = 2.5f;
+    private static float DESTROY_DISTANCE = 5f;
 
     public GameObject[] enemyPrefabs;
     private GameObject currentEnemy;
     private List<GameObject> enemies = new List<GameObject>();
-    private float LAUCH_ANGLE = 30f;
+    private float LAUCH_ANGLE = 45f;
 
     // Use this for initialization
     void Start()
@@ -64,16 +64,22 @@ public class EnemyManager : MonoBehaviour
     public void TryDestroyEnemy(Vector3 position)
     {
         if (enemies.Count == 0)
+        {
+            Debug.Log("Not enemy");
             return;
+        }
 
         GameObject firstEnemy = enemies[0];
         if (Vector3.Distance(firstEnemy.transform.position, position) < DESTROY_DISTANCE)
         {
             enemies.Remove(firstEnemy);
+            currentEnemy = null;
             // Put it away
             var rb = firstEnemy.GetComponent<Rigidbody>();
             rb.velocity = InverseHorizontalDirection(rb.velocity);
-        }else
+            Debug.Log("Enemy pushed away !");
+        }
+        else
         {
             Debug.Log("Distance was : " + Vector3.Distance(firstEnemy.transform.position, position));
         }
@@ -125,7 +131,7 @@ public class EnemyManager : MonoBehaviour
 
     private Vector3 InverseHorizontalDirection(Vector3 direction)
     {
-        var newDirection = new Vector3(-direction.x, direction.y, -direction.z);
+        var newDirection = new Vector3(-direction.x, 0, -direction.z);
         return newDirection;
     }
 }
