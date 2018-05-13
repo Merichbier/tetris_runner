@@ -23,7 +23,7 @@ public class AdversarySpawner : MonoBehaviour {
         while(true)
         {
             yield return new WaitForSeconds(SPAWN_TIME);
-            if(rng.NextDouble() < 0.5f)
+            if(rng.NextDouble() < 1f)
             {
                 // Show a wall
                 var wallManager = GameObject.Find("WallManager").GetComponent<WallSpawn>();

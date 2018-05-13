@@ -41,7 +41,7 @@ public class WallSpawn : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
+        indexPrefab = (new System.Random()).Next(0, wallsPrefabs.Count);
     }
 
     // Update is called once per frame
@@ -157,13 +157,13 @@ public class WallSpawn : MonoBehaviour
         var player = GameObject.FindGameObjectWithTag("Character").transform;
         Vector3 position = new Vector3(0f, -5f, player.transform.position.z + AdversarySpawner.SPAWN_OFFSET);
         wall.transform.position = position;
-
+        var zSize = wall.GetComponentInChildren<MeshCollider>().bounds.extents.z;
+        Debug.Log("Size is :" + zSize);
         // Find right terrain height
-        float height = PlaneManager.getHeight(position);
-        if (height == 0f)
-            Debug.Log("Got default value for walls..");
+        float heightStart = PlaneManager.getHeight(position - new Vector3(0,0,zSize));
+        float heightEnd = PlaneManager.getHeight(position + new Vector3(0, 0, zSize));
 
-        position.y = height + AdversarySpawner.EPSILON_SPAWN;
+        position.y = (heightStart + heightEnd) / 2f;
 
         finalPosition = position;
     }
