@@ -12,7 +12,7 @@ public class EnemyManager : MonoBehaviour
     public GameObject[] enemyPrefabs;
     private GameObject currentEnemy;
     private List<GameObject> enemies = new List<GameObject>();
-    private float LAUCH_ANGLE = 45f;
+    private float LAUCH_ANGLE = 30f;
 
     // Use this for initialization
     void Start()
@@ -48,7 +48,7 @@ public class EnemyManager : MonoBehaviour
         for (int i = enemies.Count - 1; i >= 0; i--)
         {
             GameObject enemy = enemies[i];
-            if (player.z > enemy.transform.position.z + PlaneManager.THRESHOLD)
+            if (player.z > enemy.transform.position.z + PlaneManager.THRESHOLD || enemy.transform.position.y < 0)
             {
                 enemies.Remove(enemy);
                 Destroy(enemy);
@@ -70,7 +70,12 @@ public class EnemyManager : MonoBehaviour
         if (Vector3.Distance(firstEnemy.transform.position, position) < DESTROY_DISTANCE)
         {
             enemies.Remove(firstEnemy);
-            Destroy(firstEnemy);
+            // Put it away
+            var rb = firstEnemy.GetComponent<Rigidbody>();
+            rb.velocity = InverseHorizontalDirection(rb.velocity);
+        }else
+        {
+            Debug.Log("Distance was : " + Vector3.Distance(firstEnemy.transform.position, position));
         }
     }
 
@@ -116,5 +121,11 @@ public class EnemyManager : MonoBehaviour
 
         var rb = enemy.GetComponent<Rigidbody>();
         rb.velocity = globalVelocity;
+    }
+
+    private Vector3 InverseHorizontalDirection(Vector3 direction)
+    {
+        var newDirection = new Vector3(-direction.x, direction.y, -direction.z);
+        return newDirection;
     }
 }

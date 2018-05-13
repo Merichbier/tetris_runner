@@ -103,7 +103,7 @@ public class Player : MonoBehaviour
 
     void RemoveLife()
     {
-        //health -= 1;
+        health -= 1;
     }
 
     void UpdateScore(float f, bool increment)
