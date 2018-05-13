@@ -58,13 +58,15 @@ public class WallSpawn : MonoBehaviour
             return;
         var player = GameObject.FindGameObjectWithTag("Character").transform;
 
-
-        GameObject firstWall = walls[0];
-        if (player.position.z > firstWall.transform.position.z + PlaneManager.THRESHOLD)
+        foreach (GameObject wall in walls)
         {
-            walls.Remove(firstWall);
-            Destroy(firstWall);
+            if (player.position.z > wall.transform.position.z + PlaneManager.THRESHOLD)
+            {
+                walls.Remove(wall);
+                Destroy(wall);
+            }
         }
+
     }
 
     public void RemoveCollidedWall(GameObject wall)

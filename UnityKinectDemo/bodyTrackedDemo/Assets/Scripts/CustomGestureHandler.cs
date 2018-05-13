@@ -51,6 +51,9 @@ public class CustomGestureHandler : MonoBehaviour
     bool punchReady;
     bool punched;
 
+    bool slapRightReady;
+    bool slapLeftReady;
+
     int circleStateRight = 0;
     int circleStateLeft = 0;
 
@@ -81,7 +84,20 @@ public class CustomGestureHandler : MonoBehaviour
     {
         HandleClap();
         HandlePunch();
+        HandleSlaps();
         HandleCircles();
+    }
+
+    private void HandleSlaps()
+    {
+        Vector3[] jointsPos = km.GetPlayer1_Pos();
+        Vector3 rightHand = jointsPos[rightHandIndex];
+        Vector3 leftHand = jointsPos[leftHandIndex];
+        Vector3 hips = jointsPos[hipCenterIndex];
+
+        //Debug.Log(String.Format("Left : {0}, Right {1}", slapLeftReady, slapRightReady));
+        HandleRightSlap(rightHand, hips);
+        //HandleLeftSlap(leftHand, hips);
     }
 
     private void HandleCircles()
@@ -204,6 +220,49 @@ public class CustomGestureHandler : MonoBehaviour
         }
     }
 
+    void HandleRightSlap(Vector3 hand, Vector3 hips)
+    {
+        bool isRight = hand.x > hips.x;
+        bool isLeft = hand.x < hips.x;
+        Debug.Log(String.Format("Left : {0}, Right {1}", isLeft, isRight));
+
+        if (!slapRightReady && isLeft)
+        {
+            // State 1 of slaping with right hand
+            Debug.Log("Right Slap ready");
+            slapRightReady = true;
+        }
+        else if (slapRightReady && isRight)
+        {
+            Debug.Log("RightSlap");
+            slapRightReady = false;
+            player.Slap();
+        }
+        else if (isRight)
+        {
+            slapRightReady = false;
+        }
+    }
+
+    void HandleLeftSlap(Vector3 hand, Vector3 hips)
+    {
+        bool isRight = hand.x > hips.x;
+        bool isLeft = hand.x < hips.x;
+
+        if (!slapLeftReady && isRight)
+        {
+            // State 1 of slaping with left hand
+            Debug.Log("Left Slap Ready");
+            slapLeftReady = true;
+        }
+        else if (slapLeftReady && isLeft)
+        {
+            Debug.Log("LeftSlap");
+            slapLeftReady = false;
+            player.Slap();
+
+        }
+    }
 
     void HandleCircle(Vector3 hand, Vector3 elbow, Vector3 shoulder, bool forRightHand)
     {

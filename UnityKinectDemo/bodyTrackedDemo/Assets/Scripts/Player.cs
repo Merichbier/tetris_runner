@@ -81,6 +81,7 @@ public class Player : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        //Debug.Log("Collision with " + other.gameObject.tag);
         if (other.gameObject.tag == "Wall_Hole")
         {
             UpdateScore(wallPoints, true);
@@ -91,6 +92,12 @@ public class Player : MonoBehaviour
             Coin coin = other.gameObject.GetComponent<Coin>();
             UpdateScore(coin.GetPoints(), true);
             coin.HideCoin();
+        }
+        if (other.gameObject.tag == "Enemy")
+        {
+            EnemyManager em = GameObject.Find("EnemyManager").GetComponent<EnemyManager>();
+            em.RemoveCollidedEnemy(other.gameObject);
+            RemoveLife();
         }
     }
 
@@ -216,6 +223,12 @@ public class Player : MonoBehaviour
         if (energy >= maxEnergy) {
             EnterFuryMode();
         }
+    }
+
+    public void Slap()
+    {
+        var enemyManager = GameObject.Find("EnemyManager").GetComponent<EnemyManager>();
+        enemyManager.TryDestroyEnemy(transform.position);
     }
 
     //Enter the bonus scene

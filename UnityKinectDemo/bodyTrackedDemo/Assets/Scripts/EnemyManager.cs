@@ -7,6 +7,7 @@ public class EnemyManager : MonoBehaviour
 {
     private static float MAX_X = 5f;
     private static float SPEED_SNOWBALL = 15f;
+    private static float DESTROY_DISTANCE = 2.5f;
 
     public GameObject[] enemyPrefabs;
     private GameObject currentEnemy;
@@ -36,6 +37,7 @@ public class EnemyManager : MonoBehaviour
         direction = Vector3.Normalize(direction) * speed;
         direction.y = rb.velocity.y;
         rb.velocity = direction;
+
     }
 
     private void CleanSnowballs()
@@ -43,8 +45,27 @@ public class EnemyManager : MonoBehaviour
         if (enemies.Count == 0)
             return;
         var player = GameObject.FindGameObjectWithTag("Character").transform.position;
+        foreach(GameObject enemy in enemies) {
+            if (player.z > enemy.transform.position.z + PlaneManager.THRESHOLD)
+            {
+                enemies.Remove(enemy);
+                Destroy(enemy);
+            }
+        }
+
+    }
+    public void RemoveCollidedEnemy(GameObject enemy)
+    {
+        enemies.Remove(enemy);
+        Destroy(enemy);
+    }
+    public void TryDestroyEnemy(Vector3 position)
+    {
+        if (enemies.Count == 0)
+            return;
+
         GameObject firstEnemy = enemies[0];
-        if (player.z > firstEnemy.transform.position.z + PlaneManager.THRESHOLD)
+        if(Vector3.Distance(firstEnemy.transform.position, position)< DESTROY_DISTANCE)
         {
             enemies.Remove(firstEnemy);
             Destroy(firstEnemy);

@@ -346,6 +346,17 @@ MonoBehaviour:
   normalMaterial: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
   bonusCoin: {fileID: 2100000, guid: ea70acc9eb3d66f44a40de5ca35f10ca, type: 2}
   normalCoin: {fileID: 2100000, guid: 1f689858edc067e4f97110124fed6d01, type: 2}
+--- !u!114 &151715077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 151715072}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac33a1de40eb43b49b85e4e975f08d0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &300334882
 GameObject:
   m_ObjectHideFlags: 0

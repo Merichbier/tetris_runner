@@ -40,7 +40,6 @@ public class GestureListener : MonoBehaviour, KinectGestures.GestureListenerInte
 	                              KinectWrapper.NuiSkeletonPositionIndex joint, Vector3 screenPos)
 	{
 		string sGestureText = gesture + " detected";
-        Debug.Log(sGestureText);
 
         if (GestureInfo != null)
 		{
