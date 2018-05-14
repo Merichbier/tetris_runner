@@ -6,7 +6,13 @@ using UnityEngine.SceneManagement;
 using TMPro;
 
 public class Player : MonoBehaviour
-{   
+{
+
+    AudioSource audioSource;
+    float pitchStart = 1f;
+    float pitchEnd = 1.5f;
+    float pitchIncrement = 0.01f;
+
     float health;
     float maxHealth=10;
 
@@ -52,7 +58,9 @@ public class Player : MonoBehaviour
     ParticleSystem dust;
     ParticleSystem beams;
     Behaviour halo;
-  
+
+    Image punchIconBack;
+    Image punchIcon;
 
     // Use this for initialization
     void Start()
@@ -75,9 +83,16 @@ public class Player : MonoBehaviour
         dust = GameObject.Find("FuryAura").GetComponentsInChildren<ParticleSystem>()[0];
         beams = GameObject.Find("FuryAura").GetComponentsInChildren<ParticleSystem>()[1];
 
+        punchIcon = GameObject.Find("PunchIcon_Back").GetComponent<Image>();
+        punchIconBack = GameObject.Find("PunchIcon").GetComponent<Image>();
+
+
         dust.Pause();
         beams.Pause();
 
+        audioSource = GetComponentInChildren<AudioSource>();
+
+        audioSource.pitch = pitchStart;
         //gameOverText = GameObject.Find("GameOver").GetComponent<TextMeshProUGUI>();
         //scoreText = GameObject.Find("TotalScore").GetComponent<TextMeshProUGUI>();
     }
@@ -119,6 +134,7 @@ public class Player : MonoBehaviour
         //UI.UpdateText(2, "Speed: " + Mathf.Round(r.velocity.magnitude));
         UpdateUiBars();
         energy += Time.deltaTime * energyGainAmount;
+        coinCooldown -= Time.deltaTime;
     }
 
 
@@ -159,6 +175,10 @@ public class Player : MonoBehaviour
         }
     }
 
+
+    float coinCooldown;
+    float coinCooldownMax = 0.5f;    
+
     void OnTriggerEnter(Collider other)
     {
         //Debug.Log("Collision with " + other.gameObject.tag);
@@ -169,9 +189,23 @@ public class Player : MonoBehaviour
         }
         if (other.gameObject.tag == "Coin")
         {
-            Coin coin = other.gameObject.GetComponent<Coin>();
-            UpdateScore(coin.GetPoints(), true);
-            coin.HideCoin();
+            if (coinCooldown <= 0) { 
+                if (true||!audioSource.isPlaying)
+                {
+                    audioSource.Play();
+                    audioSource.pitch += pitchIncrement;
+                    if(audioSource.pitch >= pitchEnd)
+                    {
+                        audioSource.pitch = pitchStart;
+                    }                
+                }
+                coinCooldown = coinCooldownMax;
+                Coin coin = other.gameObject.GetComponent<Coin>();
+                UpdateScore(coin.GetPoints(), true);
+                Destroy(other.gameObject);
+
+                Debug.Log(audioSource.pitch);
+            }
         }
         if (healthLossCooldown <= 0 && other.gameObject.tag == "Enemy")
         {
@@ -242,6 +276,8 @@ public class Player : MonoBehaviour
                 ExitFuryMode();
             }
         }
+        punchIconBack.enabled = energy >= punchEnergy;
+        punchIcon.enabled = energy >= punchEnergy;
     }
 
     public void ExitFuryMode()

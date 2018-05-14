@@ -39,7 +39,7 @@ public class Coin : MonoBehaviour {
     void Move()
     {
         var position = transform.position;
-        position.z += totalCoins;
+        position.z += CoinSpawner.coinSpacing;
 
         position.y = PlaneManager.getHeight(position) + CoinSpawner.Y_OFFSET;
         transform.position = position;

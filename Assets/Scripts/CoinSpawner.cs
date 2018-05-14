@@ -5,7 +5,7 @@ using UnityEngine;
 public class CoinSpawner : MonoBehaviour {
 
     int numCoins = 30;
-    float coinSpacing = 1;
+    public static float coinSpacing = 16;
     public static float Y_OFFSET = 0.2f;
     public static float X_OFFSET;
 
