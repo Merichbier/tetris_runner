@@ -19,7 +19,7 @@ public class WallSpawn : MonoBehaviour
     private static float MinScaleZ = 0.2f;
     private static float MaxScaleZ = 1f;
 
-    private static float APPEARING_SPEED = 0.05f;
+    private static float APPEARING_SPEED = 0.15f;
     private float elapsedTime = 0f;
 
     private GameObject appearingWall;

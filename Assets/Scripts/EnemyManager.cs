@@ -97,7 +97,7 @@ public class EnemyManager : MonoBehaviour
         // Random start along X axis
         float xPosition = (float)(new System.Random()).NextDouble() * MAX_X * 2f - MAX_X;
         Vector3 position = new Vector3(xPosition, -5f, player.z + AdversarySpawner.SPAWN_OFFSET * 2f);
-        position.y = PlaneManager.getHeight(position) + enemy.GetComponent<SphereCollider>().radius + AdversarySpawner.EPSILON_SPAWN;
+        position.y = PlaneManager.getHeight(position) + enemy.GetComponent<SphereCollider>().radius + 2*AdversarySpawner.EPSILON_SPAWN;
 
         enemy.transform.position = position;
         currentEnemy = enemy;
