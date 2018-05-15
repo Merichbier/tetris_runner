@@ -15,7 +15,7 @@ public class PlaneManager : MonoBehaviour
     private int nextToSpawn = 0;
 
     public static float TERRAIN_Y_OFFSET = -8.75f;
-    public static int THRESHOLD = 5;
+    public static int THRESHOLD = 10;
 
     // Use this for initialization
     void Start()

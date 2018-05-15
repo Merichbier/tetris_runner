@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
     float maxHealth=10;
 
     float energy;
-    float maxEnergy=10;
+    float maxEnergy=100;
     float energyGainAmount = 0.1f; //0.1 energy gained per second
     private float energyLossAmount = 2;
 
@@ -133,7 +133,7 @@ public class Player : MonoBehaviour
 
     void RemoveLife()
     {
-        health -= 1;
+        //health -= 1;
     }
 
     void UpdateScore(float f, bool increment)

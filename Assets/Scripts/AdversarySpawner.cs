@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AdversarySpawner : MonoBehaviour {
     private static float SPAWN_TIME = 3f;
-    public static float SPAWN_OFFSET = 15f;
+    public static float SPAWN_OFFSET = 20f;
     public static float EPSILON_SPAWN = 0.5f;
     private static System.Random rng = new System.Random();
 
@@ -23,7 +23,7 @@ public class AdversarySpawner : MonoBehaviour {
         while(true)
         {
             yield return new WaitForSeconds(SPAWN_TIME);
-            if(rng.NextDouble() < 0.5f)
+            if(rng.NextDouble() < 1f)
             {
                 // Show a wall
                 var wallManager = GameObject.Find("WallManager").GetComponent<WallSpawn>();

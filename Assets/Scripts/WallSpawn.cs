@@ -19,7 +19,7 @@ public class WallSpawn : MonoBehaviour
     private static float MinScaleZ = 0.2f;
     private static float MaxScaleZ = 1f;
 
-    private static float APPEARING_SPEED = 0.15f;
+    private static float APPEARING_SPEED = 0.05f;
     private float elapsedTime = 0f;
 
     private GameObject appearingWall;
@@ -41,7 +41,7 @@ public class WallSpawn : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        indexPrefab = (new System.Random()).Next(0, wallsPrefabs.Count);
+        //indexPrefab = (new System.Random()).Next(0, wallsPrefabs.Count);
     }
 
     // Update is called once per frame
@@ -143,7 +143,8 @@ public class WallSpawn : MonoBehaviour
     {
         GameObject wall = GameObject.Instantiate(wallsPrefabs[indexPrefab]) as GameObject;
         wall.transform.SetParent(transform);
-        indexPrefab = (new System.Random()).Next(0, wallsPrefabs.Count);
+        //indexPrefab = (new System.Random()).Next(0, wallsPrefabs.Count);
+        indexPrefab++;
 
         appearingWall = wall;
         PositionWall(wall);
@@ -156,7 +157,7 @@ public class WallSpawn : MonoBehaviour
     {
         // Position it ahead of the player
         var player = GameObject.FindGameObjectWithTag("Character").transform;
-        Vector3 position = new Vector3(0f, -5f, player.transform.position.z + AdversarySpawner.SPAWN_OFFSET);
+        Vector3 position = new Vector3(0f, -15f, player.transform.position.z + AdversarySpawner.SPAWN_OFFSET);
         wall.transform.position = position;
         var zSize = wall.GetComponentInChildren<MeshCollider>().bounds.extents.z;
         //Debug.Log("Size is :" + zSize);
