@@ -67,32 +67,35 @@ public class Player : MonoBehaviour
     {
         r = GetComponent<Rigidbody>();
         r.AddForce(new Vector3(0, 0, speed));
-        bonus = GameObject.Find("GameHandler").GetComponent<BonusScene>();
-        UI.UpdateScoreText("Score: " + score);
+
+        
         startPosition = transform.position;
         kinectManager = GameObject.Find("Main Camera").GetComponent<KinectManager>();
         health = maxHealth;
 
         sceneName = SceneManager.GetActiveScene().name;
-        if (sceneName != "Start") { 
+        if (sceneName == "Main") { 
             healthBarFill = GameObject.Find("HealthBarFill").GetComponent<Image>();
             energyBarFill = GameObject.Find("EnergyBarFill").GetComponent<Image>();
+            bonus = GameObject.Find("GameHandler").GetComponent<BonusScene>();
+            UI.UpdateScoreText("Score: " + 0);
+
+            punchIcon = GameObject.Find("PunchIcon_Back").GetComponent<Image>();
+            punchIconBack = GameObject.Find("PunchIcon").GetComponent<Image>();
+
+            halo = (Behaviour)GameObject.Find("Halo").GetComponent("Halo");
+            dust = GameObject.Find("FuryAura").GetComponentsInChildren<ParticleSystem>()[0];
+            beams = GameObject.Find("FuryAura").GetComponentsInChildren<ParticleSystem>()[1];
+
+            dust.Pause();
+            beams.Pause();
+
+            audioSource = GetComponentInChildren<AudioSource>();
+
+            audioSource.pitch = pitchStart;
         }
 
-        halo = (Behaviour)GameObject.Find("Halo").GetComponent("Halo");
-        dust = GameObject.Find("FuryAura").GetComponentsInChildren<ParticleSystem>()[0];
-        beams = GameObject.Find("FuryAura").GetComponentsInChildren<ParticleSystem>()[1];
-
-        punchIcon = GameObject.Find("PunchIcon_Back").GetComponent<Image>();
-        punchIconBack = GameObject.Find("PunchIcon").GetComponent<Image>();
-
-
-        dust.Pause();
-        beams.Pause();
-
-        audioSource = GetComponentInChildren<AudioSource>();
-
-        audioSource.pitch = pitchStart;
+       
         //gameOverText = GameObject.Find("GameOver").GetComponent<TextMeshProUGUI>();
         //scoreText = GameObject.Find("TotalScore").GetComponent<TextMeshProUGUI>();
     }
@@ -119,7 +122,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if (sceneName == "Start")
+        if (sceneName != "Main")
         {
             return;
         }
@@ -130,13 +133,15 @@ public class Player : MonoBehaviour
         PlayerAlive();
         UpdateUiBars();
         HandleEnergy();
-
+        UpdateScore(0);
         //UI.UpdateText(2, "Speed: " + Mathf.Round(r.velocity.magnitude));
         UpdateUiBars();
         energy += Time.deltaTime * energyGainAmount;
         coinCooldown -= Time.deltaTime;
     }
 
+
+    int distScore;
 
     void PlayerAlive()
     {
@@ -149,16 +154,13 @@ public class Player : MonoBehaviour
                 force.y = 1;
                 r.AddRelativeForce(force);
             }
-            UpdateScore(Vector3.Distance(transform.position, startPosition), false);
+            distScore = (int)Math.Floor(Vector3.Distance(transform.position, startPosition));
         }
         else
         {
             Die();
         }
     }
-
-
-
 
     void OnCollisionEnter(Collision collision)
     {
@@ -177,16 +179,10 @@ public class Player : MonoBehaviour
 
 
     float coinCooldown;
-    float coinCooldownMax = 0.5f;    
+    float coinCooldownMax = 0.05f;    
 
     void OnTriggerEnter(Collider other)
     {
-        //Debug.Log("Collision with " + other.gameObject.tag);
-        if (other.gameObject.tag == "Wall_Hole")
-        {
-            UpdateScore(wallPoints, true);
-            Destroy(other.gameObject);
-        }
         if (other.gameObject.tag == "Coin")
         {
             if (coinCooldown <= 0) { 
@@ -201,10 +197,9 @@ public class Player : MonoBehaviour
                 }
                 coinCooldown = coinCooldownMax;
                 Coin coin = other.gameObject.GetComponent<Coin>();
-                UpdateScore(coin.GetPoints(), true);
-                Destroy(other.gameObject);
-
-                Debug.Log(audioSource.pitch);
+                UpdateScore(coin.GetPoints());
+              
+                coin.Move();
             }
         }
         if (healthLossCooldown <= 0 && other.gameObject.tag == "Enemy")
@@ -226,17 +221,10 @@ public class Player : MonoBehaviour
         health -= 1;
     }
 
-    void UpdateScore(float f, bool increment)
+    void UpdateScore(float f)
     {
-        if (increment)
-        {
-            score += f;
-        }
-        else
-        {
-            score = f;
-        }
-        UI.UpdateScoreText("Score: " + Mathf.Round(score));
+        score += f;
+        UI.UpdateScoreText("Score: " + Mathf.Round(distScore+score));
     }
 
     

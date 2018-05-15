@@ -5,7 +5,7 @@ using UnityEngine;
 public class CoinSpawner : MonoBehaviour {
 
     int numCoins = 30;
-    public static float coinSpacing = 16;
+    public static float coinSpacing = 2;
     public static float Y_OFFSET = 0.2f;
     public static float X_OFFSET;
 
@@ -30,9 +30,9 @@ public class CoinSpawner : MonoBehaviour {
             }
             GameObject coin = GameObject.Instantiate(Resources.Load("Coin")) as GameObject;
 
-            coin.transform.position = new Vector3(x + X_OFFSET, Y_OFFSET, i * coinSpacing);
+            coin.transform.position = new Vector3(x + X_OFFSET, Y_OFFSET, 3+i * coinSpacing);
             coin.transform.parent = coinParent.transform;
-            coin.GetComponent<Coin>().SetTotalCoins(numCoins);
+            //coin.GetComponent<Coin>().SetTotalCoins(numCoins);
             coins.Add(coin);
         }
     }
