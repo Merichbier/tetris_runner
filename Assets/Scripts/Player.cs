@@ -62,6 +62,10 @@ public class Player : MonoBehaviour
     Image punchIconBack;
     Image punchIcon;
 
+
+    TextMeshProUGUI gameOverText;
+
+
     // Use this for initialization
     void Start()
     {
@@ -96,7 +100,7 @@ public class Player : MonoBehaviour
         }
 
        
-        //gameOverText = GameObject.Find("GameOver").GetComponent<TextMeshProUGUI>();
+        gameOverText = GameObject.Find("Text_GameOver").GetComponent<TextMeshProUGUI>();
         //scoreText = GameObject.Find("TotalScore").GetComponent<TextMeshProUGUI>();
     }
 
@@ -322,6 +326,10 @@ public class Player : MonoBehaviour
         {
             energy = 0;
             bonus.TurnOnBonus();
+
+            Color c = energyBarFill.color;
+            c.a = 1;
+            energyBarFill.color = c;
         }
                 
     }
@@ -379,8 +387,9 @@ public class Player : MonoBehaviour
     void Die()
     {
         speed = 0;
-        /*
         gameOverText.enabled = true;
+        /*
+        
         scoreText.text = "You scored " + Math.Round(score) + " points";
         scoreText.enabled = true;
         */

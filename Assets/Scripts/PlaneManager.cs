@@ -60,6 +60,7 @@ public class PlaneManager : MonoBehaviour
         activeGrounds.RemoveAt(0);
     }
 
+    /*
     public void ChangeMaterial(Material m)
     {
         foreach (GameObject g in activeGrounds)
@@ -68,6 +69,7 @@ public class PlaneManager : MonoBehaviour
             mr.material = m;
         }
     }
+    */
 
     public static float getHeight(Vector3 position, float defaultValue = 0f)
     {
