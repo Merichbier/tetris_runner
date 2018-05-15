@@ -48,7 +48,7 @@ public class EnemyManager : MonoBehaviour
         for (int i = enemies.Count - 1; i >= 0; i--)
         {
             GameObject enemy = enemies[i];
-            if (player.z > enemy.transform.position.z + PlaneManager.THRESHOLD || enemy.transform.position.y < 0)
+            if (player.z > enemy.transform.position.z + PlaneManager.THRESHOLD)
             {
                 enemies.Remove(enemy);
                 Destroy(enemy);
@@ -88,7 +88,7 @@ public class EnemyManager : MonoBehaviour
     public void spawnEnemy()
     {
         GameObject enemy;
-        enemy = Instantiate(enemyPrefabs[0]) as GameObject;
+        enemy = GameObject.Instantiate(enemyPrefabs[0]) as GameObject;
         enemy.transform.SetParent(transform);
 
         // Show it ahead of the player
@@ -97,7 +97,7 @@ public class EnemyManager : MonoBehaviour
         // Random start along X axis
         float xPosition = (float)(new System.Random()).NextDouble() * MAX_X * 2f - MAX_X;
         Vector3 position = new Vector3(xPosition, -5f, player.z + AdversarySpawner.SPAWN_OFFSET * 2f);
-        position.y = PlaneManager.getHeight(position) + enemy.GetComponent<SphereCollider>().radius + 2*AdversarySpawner.EPSILON_SPAWN;
+        position.y = PlaneManager.getHeight(position) + enemy.GetComponent<SphereCollider>().radius + 2 * AdversarySpawner.EPSILON_SPAWN;
 
         enemy.transform.position = position;
         currentEnemy = enemy;
@@ -108,7 +108,7 @@ public class EnemyManager : MonoBehaviour
         enemy.transform.LookAt(playerXZPos);
 
         var target = player;
-        target.z += 13f;
+        target.z += AdversarySpawner.SPAWN_OFFSET - 2f;
         // Kinematic formula
         float R = Vector3.Distance(enemy.transform.position, target);
         float G = Physics.gravity.y;

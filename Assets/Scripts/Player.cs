@@ -26,6 +26,7 @@ public class Player : MonoBehaviour
     Rigidbody r;
 
     public bool canMove;
+    public bool gameOver = false;
 
     float hitDistance = 10;
     float jumpForce = 150;
@@ -133,7 +134,7 @@ public class Player : MonoBehaviour
 
     void RemoveLife()
     {
-        //health -= 1;
+        health -= 1;
     }
 
     void UpdateScore(float f, bool increment)
@@ -345,6 +346,7 @@ public class Player : MonoBehaviour
     void Die()
     {
         speed = 0;
+        gameOver = true;
         /*
         gameOverText.enabled = true;
         scoreText.text = "You scored " + Math.Round(score) + " points";

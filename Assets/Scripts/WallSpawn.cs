@@ -8,7 +8,7 @@ using System;
 public class WallSpawn : MonoBehaviour
 {
     public List<GameObject> wallsPrefabs = new List<GameObject>();
-    private int indexPrefab = 0;
+    private int indexPrefab = 7;
 
     private static float MinScaleX = 1f;
     private static float MaxScaleX = 2f;
@@ -41,7 +41,7 @@ public class WallSpawn : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        //indexPrefab = (new System.Random()).Next(0, wallsPrefabs.Count);
+        indexPrefab = (new System.Random()).Next(0, wallsPrefabs.Count);
     }
 
     // Update is called once per frame
@@ -59,7 +59,7 @@ public class WallSpawn : MonoBehaviour
         var player = GameObject.FindGameObjectWithTag("Character").transform;
 
         for (int i = walls.Count - 1; i >= 0; i--)
-        {   
+        {
             GameObject wall = walls[i];
             if (player.position.z > wall.transform.position.z + PlaneManager.THRESHOLD)
             {
@@ -141,10 +141,13 @@ public class WallSpawn : MonoBehaviour
 
     public void showWall()
     {
+        var rng = new System.Random();
         GameObject wall = GameObject.Instantiate(wallsPrefabs[indexPrefab]) as GameObject;
         wall.transform.SetParent(transform);
-        //indexPrefab = (new System.Random()).Next(0, wallsPrefabs.Count);
-        indexPrefab++;
+        var rotation = wall.transform.rotation;
+        rotation.y += (float)(180 * Math.Round(rng.NextDouble()));
+        indexPrefab = rng.Next(0, wallsPrefabs.Count);
+        wall.transform.rotation = rotation;
 
         appearingWall = wall;
         PositionWall(wall);
