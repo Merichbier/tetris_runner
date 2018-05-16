@@ -271,6 +271,10 @@ public class Player : MonoBehaviour
         }
 
 
+        //appearingWall.transform.position = Vector3.Slerp(appearingWall.transform.position, finalPosition, APPEARING_SPEED);
+ 
+
+
 
         EnergyBarAnimation();
         TestInput();

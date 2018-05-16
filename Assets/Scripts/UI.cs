@@ -16,6 +16,11 @@ public class UI : MonoBehaviour
     static TextMeshProUGUI playerScore;
     static TextMeshProUGUI gameOver;
 
+    static float lerpSpeed = 4;
+    static float healthAmount = 1;
+    static float energyAmount;
+    static float bonusAmount;
+
     // Use this for initialization
     void Start()
     {
@@ -26,6 +31,13 @@ public class UI : MonoBehaviour
         punchIcon = GetImage("PunchIcon");
         furyIcon = GetImage("FuryIcon");
         gameOver = GameObject.Find("Text_GameOver").GetComponent<TextMeshProUGUI>();
+    }
+
+    private void Update()
+    {
+        healthFill.fillAmount = Mathf.Lerp(healthFill.fillAmount, healthAmount, Time.deltaTime * lerpSpeed);
+        energyFill.fillAmount = Mathf.Lerp(energyFill.fillAmount, energyAmount, Time.deltaTime * lerpSpeed);
+        bonusFill.fillAmount = Mathf.Lerp(bonusFill.fillAmount, bonusAmount, Time.deltaTime * lerpSpeed);
     }
 
     Image GetImage(string s)
@@ -39,17 +51,17 @@ public class UI : MonoBehaviour
 
     public static void SetBonusFill(float f)
     {
-        bonusFill.fillAmount = f;
+        bonusAmount = f;
     }
 
     public static void SetHealthFill(float f)
     {
-        healthFill.fillAmount = f;
+        healthAmount = f;
     }
 
     public static void SetEnergyFill(float f)
     {
-        energyFill.fillAmount = f;
+        energyAmount = f;
     }
 
     public static void SetPunchIcon(bool b)
