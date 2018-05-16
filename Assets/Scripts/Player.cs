@@ -12,8 +12,8 @@ public class Player : MonoBehaviour
 
     float energy;
     float maxEnergy=100;
-    float energyGainAmount = 0.1f; //0.1 energy gained per second
-    private float energyLossAmount = 2;
+    float energyGainAmount = 1f; //energy gained per second
+    float energyLossAmount = 15;
 
     Image healthBarFill;
     Image energyBarFill;
@@ -22,6 +22,10 @@ public class Player : MonoBehaviour
     float maxSpeed = 7;
 
     float score;
+    int distScore;
+
+    float coinCooldown;
+    float coinCooldownMax = 0.05f;
 
     Rigidbody r;
 
@@ -49,14 +53,20 @@ public class Player : MonoBehaviour
     float healthLossCooldown; //prevent wall collision removing more than 1 health
     float healthLossCooldownMax = 1;
     
-
-
-
     //particle effects
     ParticleSystem dust;
     ParticleSystem beams;
     Behaviour halo;
-  
+    
+    AudioSource audioSource;
+    float pitchStart = 1f;
+    float pitchEnd = 1.5f;
+    float pitchIncrement = 0.01f;
+ 
+    Image punchIconBack;
+    Image punchIcon;
+    
+    TextMeshProUGUI gameOverText;
 
     // Use this for initialization
     void Start()
@@ -73,21 +83,51 @@ public class Player : MonoBehaviour
         if (sceneName != "Start") { 
             healthBarFill = GameObject.Find("HealthBarFill").GetComponent<Image>();
             energyBarFill = GameObject.Find("EnergyBarFill").GetComponent<Image>();
+            
+            bonus = GameObject.Find("GameHandler").GetComponent<BonusScene>();
+            UI.UpdateScoreText("Score: " + 0);
+
+            punchIcon = GameObject.Find("PunchIcon_Back").GetComponent<Image>();
+            punchIconBack = GameObject.Find("PunchIcon").GetComponent<Image>();
+
+            halo = (Behaviour)GameObject.Find("Halo").GetComponent("Halo");
+            dust = GameObject.Find("FuryAura").GetComponentsInChildren<ParticleSystem>()[0];
+            beams = GameObject.Find("FuryAura").GetComponentsInChildren<ParticleSystem>()[1];
+
+            dust.Pause();
+            beams.Pause();
+
+            audioSource = GetComponentInChildren<AudioSource>();
+
+            audioSource.pitch = pitchStart;
         }
 
-        halo = (Behaviour)GameObject.Find("Halo").GetComponent("Halo");
+        gameOverText = GameObject.Find("Text_GameOver").GetComponent<TextMeshProUGUI>();
+   }
 
-        dust = GameObject.Find("FuryAura").GetComponentsInChildren<ParticleSystem>()[0];
-        beams = GameObject.Find("FuryAura").GetComponentsInChildren<ParticleSystem>()[1];
-
-        dust.Pause();
-        beams.Pause();
-
-        //gameOverText = GameObject.Find("GameOver").GetComponent<TextMeshProUGUI>();
-        //scoreText = GameObject.Find("TotalScore").GetComponent<TextMeshProUGUI>();
+    void TestInput()
+    {
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            energy = maxEnergy;
+        }
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            Circle();
+        }
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            EnterFuryMode();
+        }
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            Punch();
+        }
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            health = 0;
+        }
     }
-
-
 
     void OnCollisionEnter(Collision collision)
     {
@@ -104,21 +144,35 @@ public class Player : MonoBehaviour
         }
     }
 
+    //arsalan branch
     void OnTriggerEnter(Collider other)
     {
-        //Debug.Log("Collision with " + other.gameObject.tag);
         if (other.gameObject.tag == "Wall_Hole")
         {
             UpdateScore(wallPoints, true);
             Destroy(other.gameObject);
         }
-        if (other.gameObject.tag == "Coin")
+        else if (other.gameObject.tag == "Coin")
         {
-            Coin coin = other.gameObject.GetComponent<Coin>();
-            UpdateScore(coin.GetPoints(), true);
-            coin.HideCoin();
+            if (coinCooldown <= 0)
+            {
+                if (true || !audioSource.isPlaying)
+                {
+                    audioSource.Play();
+                    audioSource.pitch += pitchIncrement;
+                    if (audioSource.pitch >= pitchEnd)
+                    {
+                        audioSource.pitch = pitchStart;
+                    }
+                }
+                coinCooldown = coinCooldownMax;
+                Coin coin = other.gameObject.GetComponent<Coin>();
+                UpdateScore(coin.GetPoints());
+
+                coin.Move();
+            }
         }
-        if (healthLossCooldown <= 0 && other.gameObject.tag == "Enemy")
+        else if (healthLossCooldown <= 0 && other.gameObject.tag == "Enemy")
         {
             EnemyManager em = GameObject.Find("EnemyManager").GetComponent<EnemyManager>();
             em.RemoveCollidedEnemy(other.gameObject);
@@ -131,6 +185,8 @@ public class Player : MonoBehaviour
 
         }
     }
+
+
 
     void RemoveLife()
     {
@@ -150,35 +206,8 @@ public class Player : MonoBehaviour
         UI.UpdateScoreText("Score: " + Mathf.Round(score));
     }
 
-    // Update is called once per frame
-    void Update()
+    void PlayerAlive()
     {
-        if (sceneName == "Start") {
-            return;
-        }
-
-        EnergyBarAnimation();
-
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            energy = maxEnergy;
-        }
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            Circle();
-        }
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            EnterFuryMode();
-        }
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            Punch();
-        }
-
-
-        healthLossCooldown -= Time.deltaTime;
-
         if (health > 0 && canMove)// && kinectManager.IsUserDetected())
         {
 
@@ -188,20 +217,39 @@ public class Player : MonoBehaviour
                 force.y = 1;
                 r.AddRelativeForce(force);
             }
-            UpdateScore(Vector3.Distance(transform.position, startPosition), false);
-
+            distScore = (int)Math.Floor(Vector3.Distance(transform.position, startPosition));
         }
         else
         {
             Die();
         }
+    }
 
-        UpdateUiBars();
+    void UpdateScore(float f)
+    {
+        score += f;
+        UI.UpdateScoreText("Score: " + Mathf.Round(distScore + score));
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (sceneName == "Start") {
+            return;
+        }
+
+        EnergyBarAnimation();
+        TestInput();
+        
+        PlayerAlive();
         HandleEnergy();
-
-        //UI.UpdateText(2, "Speed: " + Mathf.Round(r.velocity.magnitude));
+        HandleEnergy();
+        UpdateScore(0);
         UpdateUiBars();
+        
         energy += Time.deltaTime * energyGainAmount;
+        coinCooldown -= Time.deltaTime;
+        healthLossCooldown -= Time.deltaTime;
     }
 
 
@@ -239,6 +287,8 @@ public class Player : MonoBehaviour
                 ExitFuryMode();
             }
         }
+        punchIconBack.enabled = energy >= punchEnergy;
+        punchIcon.enabled = energy >= punchEnergy;
     }
 
     public void ExitFuryMode()
@@ -286,11 +336,22 @@ public class Player : MonoBehaviour
         enemyManager.TryDestroyEnemy(transform.position);
     }
 
+   
     //Enter the bonus scene
     internal void Circle()
     {
         Debug.Log("Circle detected !");
-        bonus.TurnOnBonus();        
+
+        if (energy >= maxEnergy)
+        {
+            energy = 0;
+            bonus.TurnOnBonus();
+
+            Color c = energyBarFill.color;
+            c.a = 1;
+            energyBarFill.color = c;
+        }
+
     }
 
     void HealthLossCooldownPeriod()
@@ -347,11 +408,7 @@ public class Player : MonoBehaviour
     {
         speed = 0;
         gameOver = true;
-        /*
         gameOverText.enabled = true;
-        scoreText.text = "You scored " + Math.Round(score) + " points";
-        scoreText.enabled = true;
-        */
     }
 
 }

@@ -42,7 +42,7 @@ public class BonusScene : MonoBehaviour {
 
     public void TurnOnBonus() {
         bonusEnabled = true;
-        pm.ChangeMaterial(bonusMaterial);
+       // pm.ChangeMaterial(bonusMaterial);
         barFill.enabled = true;
         barBorder.enabled = true;
         cs.ChangeCoinProperties(bonusCoin,bonusPoints);
@@ -50,7 +50,7 @@ public class BonusScene : MonoBehaviour {
 
     void TurnOffBonus() {
         bonusEnabled = false;
-        pm.ChangeMaterial(normalMaterial);
+        //pm.ChangeMaterial(normalMaterial);
         barFill.enabled = false;
         barBorder.enabled = false;        
         cs.ChangeCoinProperties(normalCoin,normalPoints);

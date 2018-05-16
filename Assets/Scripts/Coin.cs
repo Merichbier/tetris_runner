@@ -7,14 +7,16 @@ public class Coin : MonoBehaviour {
     float rotationSpeed = 50;
     float points = 10;
     int totalCoins;
-    Transform player;
+    bool pickedUp;
+    //Transform player;
+    Vector3 orgPos;
     MeshRenderer mr;
 
 	// Use this for initialization
 	void Start () {
-        player = GameObject.Find("Player").transform;
-        
-	}
+        orgPos = transform.position;
+        meter = GameObject.Find("CoinTarget");
+    }
 
     public float GetPoints()
     {
@@ -25,38 +27,35 @@ public class Coin : MonoBehaviour {
         points = i;
     }
 
-    IEnumerator Hide() {
-        mr = GetComponent<MeshRenderer>();
-        mr.enabled = false;
-        yield return new WaitForSeconds(0.5f);
-        mr.enabled = true;
-    }
-
-    public void HideCoin() {
-        StartCoroutine(Hide());
-    }
-
-    void Move()
+    public void Move()
     {
-        var position = transform.position;
-        position.z += totalCoins;
-
-        position.y = PlaneManager.getHeight(position) + CoinSpawner.Y_OFFSET;
-        transform.position = position;
+        pickedUp = true;
+        GetComponent<CapsuleCollider>().enabled = false;
     }
 
-    public void SetTotalCoins(int t) {
-        totalCoins = t;
-    }
-	
-	// Update is called once per frame
-	void Update () {
+    void Rotate() {
         Vector3 tmp = transform.eulerAngles;
-        tmp.y += Time.deltaTime*rotationSpeed;
-        transform.eulerAngles=tmp;
-        if (player.transform.position.z >= transform.position.z)
+        tmp.y += Time.deltaTime * rotationSpeed;
+        transform.eulerAngles = tmp;
+    }
+
+    float speed = 10;
+    Vector3 uiPos;
+
+    GameObject meter;
+
+    // Update is called once per frame
+    void FixedUpdate () {
+        Rotate();
+        if (pickedUp)
         {
-            Move();
-        }
-	}
+            transform.position = Vector3.Lerp(transform.position, meter.transform.position, 1.6f * Time.deltaTime);
+            //transform.localScale = Vector3.Lerp(transform.localScale, Vector3.zero, 1f * Time.deltaTime);
+            //Debug.Log(Vector3.Magnitude(transform.position - meter.transform.position));
+            if (Vector3.Magnitude(transform.position - meter.transform.position) < 5f)
+            {
+                Destroy(gameObject);
+            }
+        } 
+    }
 }

@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 136426583205554844}
   - component: {fileID: 23276174846504352}
   - component: {fileID: 114960195834212260}
+  - component: {fileID: 122597623569995252}
   m_Layer: 0
   m_Name: Coin
   m_TagString: Coin
@@ -38,7 +39,7 @@ Transform:
   m_GameObject: {fileID: 1078171593904992}
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 0.48, y: 1.3, z: -6.4322767}
-  m_LocalScale: {x: 0.29034436, y: 0.019312268, z: 0.29034442}
+  m_LocalScale: {x: 0.4, y: 0.019312268, z: 0.4}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -57,7 +58,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 1f689858edc067e4f97110124fed6d01, type: 2}
+  - {fileID: 2100000, guid: 7e67411433eca5b4c9f3942854523153, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -95,6 +96,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c70c1e003c12c7e4ebc0493d1599f0a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!122 &122597623569995252
+Halo:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1078171593904992}
+  m_Enabled: 0
+  m_Color:
+    serializedVersion: 2
+    rgba: 4278237695
+  m_Size: 0.6
 --- !u!136 &136426583205554844
 CapsuleCollider:
   m_ObjectHideFlags: 1
