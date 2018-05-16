@@ -9,6 +9,7 @@ public class AudioManager : MonoBehaviour {
     public AudioSource wall_break;
     public AudioSource coin_pickup;
     public AudioSource bonus_stage;
+    public AudioSource fury_mode;
 
     public void playWallHitSound()
     {
@@ -40,6 +41,15 @@ public class AudioManager : MonoBehaviour {
         bonus_stage.Stop();
     }
 
+    public void playFuryMode()
+    {
+        fury_mode.Play();
+    }
+
+    public void stopFuryMode()
+    {
+        fury_mode.Stop();
+    }
     AudioSource source;
 
     int startingPitch = 0;

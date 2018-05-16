@@ -12,7 +12,7 @@ public class Player : MonoBehaviour
     float energy;
     float maxEnergy=100;
     float energyGainAmount = 0.5f; //energy gained per second
-    float energyLossAmount = 15;
+    float energyLossAmount = 10;
 
     float speed = 40;
     float maxSpeed = 7;
@@ -167,8 +167,11 @@ public class Player : MonoBehaviour
                 }
                 */
                 numCoins++;
-                coinCounter++;
-                UI.SetBonusFill(coinCounter / maxCoinsForBonus);
+                if (!bonusEnabled) { 
+                    coinCounter++;
+                    UI.SetBonusFill(coinCounter / maxCoinsForBonus);
+                }
+                
                 coinCooldown = coinCooldownMax;
                 Coin coin = other.gameObject.GetComponent<Coin>();
                 UpdateScore(coin.GetPoints());
@@ -312,6 +315,7 @@ public class Player : MonoBehaviour
             halo.enabled = true;
             dust.Play();
             beams.Play();
+            audioManager.playFuryMode();
         }
     }
 
@@ -340,6 +344,8 @@ public class Player : MonoBehaviour
             halo.enabled = false;
             dust.Clear();
             beams.Clear();
+
+            audioManager.stopFuryMode();
 
             dust.Pause();
             beams.Pause();
@@ -393,6 +399,7 @@ public class Player : MonoBehaviour
             bonusEnabled = true;
             bonus.TurnOnBonus();
             audioManager.playBonusStage();
+
             /*
             Color c = energyBarFill.color;
             c.a = 1;
