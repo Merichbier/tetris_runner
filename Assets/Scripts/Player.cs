@@ -42,7 +42,7 @@ public class Player : MonoBehaviour
 
     float wallPoints = 10;
 
-    float punchEnergy = 2;
+    float punchEnergy = 20;
 
     string sceneName;
 
@@ -144,7 +144,7 @@ public class Player : MonoBehaviour
             if (!inFuryMode && collision.gameObject.name != "HoledWall9")
             {
                 RemoveLife();
-                audioManager.playHitSound();
+                audioManager.playWallHitSound();
                 Debug.Log(collision.gameObject.name);
                 healthLossCooldown = healthLossCooldownMax;
             }
@@ -163,6 +163,7 @@ public class Player : MonoBehaviour
         {
             if (coinCooldown <= 0)
             {
+                audioManager.playCoinPickupSound();
                 /*
                 if (true || !audioSource.isPlaying)
                 {
@@ -191,7 +192,7 @@ public class Player : MonoBehaviour
             if (!inFuryMode)
             {
                 RemoveLife();
-                audioManager.playHitSound();
+                audioManager.playSnowballHitSound();
                 healthLossCooldown = healthLossCooldownMax;
             }
 
@@ -334,6 +335,7 @@ public class Player : MonoBehaviour
         if (energy > punchEnergy) { 
             var wallManager = GameObject.Find("WallManager").GetComponent<WallSpawn>();
             wallManager.TryDestroyWall(transform.position);
+            audioManager.playWallBreakSound();
             energy -= punchEnergy;
             Debug.Log("Energy used for punch");
         }
