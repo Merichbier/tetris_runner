@@ -35,9 +35,13 @@ public class CoinSpawner : MonoBehaviour {
         player = GameObject.Find("Player").transform;
         coins = new List<GameObject>();
         coinZCounter = numCoins;
+    }
 
+    void initCoins()
+    {
         for (int i = 0; i < numCoins; i++)
         {
+            //Debug.Log("Spawn coin " + i + "th");
             SpawnCoin(i);
         }
         StartCoroutine(ContinueSpawning());
@@ -51,29 +55,33 @@ public class CoinSpawner : MonoBehaviour {
             x = amplitude * Mathf.Sin(period * i);
         }
         GameObject coin = GameObject.Instantiate(Resources.Load("Coin")) as GameObject;
-        coin.transform.position = new Vector3(x + X_OFFSET, Y_OFFSET, 3 + i * coinSpacing);
+        var position = new Vector3(x + X_OFFSET, Y_OFFSET, 3 + i * coinSpacing);
+        position.y = PlaneManager.getHeight(position) + CoinSpawner.Y_OFFSET;
+        coin.transform.position = position;
         coin.transform.parent = coinParent.transform;
         coins.Add(coin);
     }
 
     IEnumerator ContinueSpawning() {
-        yield return new WaitForSeconds(spawnDelay);
-        SpawnCoin(coinZCounter);
-        coinZCounter++;
-        if (coins.Count > 0) { 
-            RemoveCoins();
+        while(true)
+        {
+            yield return new WaitForSeconds(0.1f);
+            if(coins.Count < numCoins)
+            {
+                SpawnCoin(coinZCounter);
+                coinZCounter++;
+            }
         }
-        StartCoroutine(ContinueSpawning());
     }
 
-    void RemoveCoins()
+    void CleanCoins()
     {
         coins.RemoveAll(item => item == null);
         for (int i = 0; i < coins.Count;i++) {
-            GameObject g = coins[i];
-            if (g.transform.position.z <= player.position.z-5)
+            GameObject coin = coins[i];
+            if (coin.transform.position.z <= player.position.z-5)
             {
-                Destroy(g);
+                Destroy(coin);
             }
         }
     }
@@ -88,14 +96,19 @@ public class CoinSpawner : MonoBehaviour {
 
     private void Update()
     {
-        foreach (GameObject g in coins)
+        if(coins.Count == 0)
         {
-            if (g != null)
+            initCoins();
+        }
+        foreach (GameObject coin in coins)
+        {
+            if (coin != null)
             {
-                g.GetComponent<MeshRenderer>().material = coinMaterial;
-                g.GetComponent<Coin>().SetPoints(coinScore);
+                coin.GetComponent<MeshRenderer>().material = coinMaterial;
+                coin.GetComponent<Coin>().SetPoints(coinScore);
             }
         }
+        CleanCoins();
     }
 
     public void ChangeCoinProperties(Material m, int score) {
