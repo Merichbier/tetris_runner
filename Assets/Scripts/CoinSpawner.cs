@@ -9,7 +9,7 @@ public class CoinSpawner : MonoBehaviour {
     public static float Y_OFFSET = 0.3f;
     public static float X_OFFSET;
 
-    float spawnDelay = 0.4f;
+    float spawnDelay = 0.2f;
 
     List<GameObject> coins;
     public bool sinusoidal;

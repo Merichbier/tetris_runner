@@ -4,15 +4,31 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour {
 
-    public AudioSource hit;
+    public AudioSource wall_hit;
+    public AudioSource snowball_hit;
+    public AudioSource wall_break;
+    public AudioSource coin_pickup;
 
-
-    public void playHitSound()
+    public void playWallHitSound()
     {
-        hit.Play();
+        wall_hit.Play();
     }
-    
-    public AudioClip clip;
+
+    public void playSnowballHitSound()
+    {
+        snowball_hit.Play();
+    }
+
+    public void playWallBreakSound()
+    {
+        wall_break.Play();
+    }
+
+    public void playCoinPickupSound()
+    {
+        coin_pickup.Play();
+    }
+
     AudioSource source;
 
     int startingPitch = 0;
