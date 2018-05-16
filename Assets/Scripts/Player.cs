@@ -38,6 +38,7 @@ public class Player : MonoBehaviour
 
     KinectManager kinectManager;
     BonusScene bonus;
+    AudioManager audioManager;
 
     float wallPoints = 10;
 
@@ -68,6 +69,8 @@ public class Player : MonoBehaviour
     
     TextMeshProUGUI gameOverText;
 
+    ParticleSystem snowballExplode;
+
     // Use this for initialization
     void Start()
     {
@@ -77,7 +80,9 @@ public class Player : MonoBehaviour
         UI.UpdateScoreText("Score: " + score);
         startPosition = transform.position;
         kinectManager = GameObject.Find("Main Camera").GetComponent<KinectManager>();
+        audioManager = GetComponentInChildren<AudioManager>();
         health = maxHealth;
+        snowballExplode = GameObject.Find("SnowballExplode").GetComponent<ParticleSystem>();
 
         sceneName = SceneManager.GetActiveScene().name;
         if (sceneName != "Start") { 
@@ -136,9 +141,11 @@ public class Player : MonoBehaviour
             WallSpawn ws = GameObject.Find("WallManager").GetComponent<WallSpawn>();
             ws.RemoveCollidedWall(collision.gameObject);
 
-            if (!inFuryMode)
+            if (!inFuryMode && collision.gameObject.name != "HoledWall9")
             {
                 RemoveLife();
+                audioManager.playHitSound();
+                Debug.Log(collision.gameObject.name);
                 healthLossCooldown = healthLossCooldownMax;
             }
         }
@@ -174,18 +181,27 @@ public class Player : MonoBehaviour
         }
         else if (healthLossCooldown <= 0 && other.gameObject.tag == "Enemy")
         {
+            snowballExplode.Play();
+            StartCoroutine(StopExplode());
             EnemyManager em = GameObject.Find("EnemyManager").GetComponent<EnemyManager>();
             em.RemoveCollidedEnemy(other.gameObject);
 
             if (!inFuryMode)
             {
                 RemoveLife();
+                audioManager.playHitSound();
                 healthLossCooldown = healthLossCooldownMax;
             }
 
         }
     }
 
+    IEnumerator StopExplode()
+    {
+        yield return new WaitForSeconds(1);
+        snowballExplode.Pause();
+        snowballExplode.Clear();
+    }
 
 
     void RemoveLife()

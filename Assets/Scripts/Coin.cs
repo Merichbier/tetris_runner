@@ -52,7 +52,7 @@ public class Coin : MonoBehaviour {
             transform.position = Vector3.Lerp(transform.position, meter.transform.position, 1.6f * Time.deltaTime);
             //transform.localScale = Vector3.Lerp(transform.localScale, Vector3.zero, 1f * Time.deltaTime);
             //Debug.Log(Vector3.Magnitude(transform.position - meter.transform.position));
-            if (Vector3.Magnitude(transform.position - meter.transform.position) < 5f)
+            if (Vector3.Magnitude(transform.position - meter.transform.position) < 10f)
             {
                 Destroy(gameObject);
             }
