@@ -8,6 +8,7 @@ public class AudioManager : MonoBehaviour {
     public AudioSource snowball_hit;
     public AudioSource wall_break;
     public AudioSource coin_pickup;
+    public AudioSource bonus_stage;
 
     public void playWallHitSound()
     {
@@ -27,6 +28,16 @@ public class AudioManager : MonoBehaviour {
     public void playCoinPickupSound()
     {
         coin_pickup.Play();
+    }
+
+    public void playBonusStage()
+    {
+        bonus_stage.Play();
+    }
+
+    public void stopBonusStage()
+    {
+        bonus_stage.Stop();
     }
 
     AudioSource source;

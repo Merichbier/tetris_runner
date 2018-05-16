@@ -42,7 +42,6 @@ public class WallSpawn : MonoBehaviour
     void Start()
     {
         indexPrefab = (new System.Random()).Next(0, wallsPrefabs.Count);
-        //indexPrefab = testIndex;
     }
 
     // Update is called once per frame
@@ -147,8 +146,9 @@ public class WallSpawn : MonoBehaviour
         wall.transform.SetParent(transform);
         var rotation = wall.transform.rotation;
         rotation.y += (float)(180 * Math.Round(rng.NextDouble()));
-        //indexPrefab = rng.Next(0, wallsPrefabs.Count);
+        indexPrefab = rng.Next(0, wallsPrefabs.Count);
         //indexPrefab = testIndex;
+
         wall.transform.rotation = rotation;
 
         appearingWall = wall;

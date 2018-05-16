@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 23276174846504352}
   - component: {fileID: 114960195834212260}
   - component: {fileID: 122597623569995252}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Coin
   m_TagString: Coin
   m_Icon: {fileID: 0}
@@ -57,6 +57,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 2100000, guid: 7e67411433eca5b4c9f3942854523153, type: 2}
   m_StaticBatchInfo:

@@ -3,7 +3,6 @@ using System.Collections;
 using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using TMPro;
 
 public class Player : MonoBehaviour
 {   
@@ -12,11 +11,8 @@ public class Player : MonoBehaviour
 
     float energy;
     float maxEnergy=100;
-    float energyGainAmount = 1f; //energy gained per second
+    float energyGainAmount = 0.5f; //energy gained per second
     float energyLossAmount = 15;
-
-    Image healthBarFill;
-    Image energyBarFill;
 
     float speed = 40;
     float maxSpeed = 7;
@@ -42,7 +38,7 @@ public class Player : MonoBehaviour
 
     float wallPoints = 10;
 
-    float punchEnergy = 20;
+    float punchEnergy = 50;
 
     string sceneName;
 
@@ -63,13 +59,12 @@ public class Player : MonoBehaviour
     float pitchStart = 1f;
     float pitchEnd = 1.5f;
     float pitchIncrement = 0.01f;
- 
-    Image punchIconBack;
-    Image punchIcon;
-    
-    TextMeshProUGUI gameOverText;
 
     ParticleSystem snowballExplode;
+    
+    int numCoins;
+    float coinCounter;
+    float maxCoinsForBonus = 60;
 
     // Use this for initialization
     void Start()
@@ -86,15 +81,9 @@ public class Player : MonoBehaviour
 
         sceneName = SceneManager.GetActiveScene().name;
         if (sceneName != "Start") { 
-            healthBarFill = GameObject.Find("HealthBarFill").GetComponent<Image>();
-            energyBarFill = GameObject.Find("EnergyBarFill").GetComponent<Image>();
-            
+                     
             bonus = GameObject.Find("GameHandler").GetComponent<BonusScene>();
             UI.UpdateScoreText("Score: " + 0);
-
-            punchIcon = GameObject.Find("PunchIcon_Back").GetComponent<Image>();
-            punchIconBack = GameObject.Find("PunchIcon").GetComponent<Image>();
-
             halo = (Behaviour)GameObject.Find("Halo").GetComponent("Halo");
             dust = GameObject.Find("FuryAura").GetComponentsInChildren<ParticleSystem>()[0];
             beams = GameObject.Find("FuryAura").GetComponentsInChildren<ParticleSystem>()[1];
@@ -105,32 +94,34 @@ public class Player : MonoBehaviour
             audioSource = GetComponentInChildren<AudioSource>();
 
             audioSource.pitch = pitchStart;
-        }
-
-        gameOverText = GameObject.Find("Text_GameOver").GetComponent<TextMeshProUGUI>();
+        }        
    }
 
     void TestInput()
     {
-        if (Input.GetKeyDown(KeyCode.G))
+        if (Input.GetKeyDown(KeyCode.Y))
         {
             energy = maxEnergy;
         }
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            Circle();
-        }
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            EnterFuryMode();
-        }
         if (Input.GetKeyDown(KeyCode.U))
         {
-            Punch();
+            coinCounter = maxCoinsForBonus;
         }
         if (Input.GetKeyDown(KeyCode.I))
         {
             health = 0;
+        }
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            Clap();
+        }
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            Punch();
+        }
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            Circle();
         }
     }
 
@@ -175,6 +166,9 @@ public class Player : MonoBehaviour
                     }
                 }
                 */
+                numCoins++;
+                coinCounter++;
+                UI.SetBonusFill(coinCounter / maxCoinsForBonus);
                 coinCooldown = coinCooldownMax;
                 Coin coin = other.gameObject.GetComponent<Coin>();
                 UpdateScore(coin.GetPoints());
@@ -250,12 +244,33 @@ public class Player : MonoBehaviour
         UI.UpdateScoreText("Score: " + Mathf.Round(distScore + score));
     }
 
+    float bonusTimer;
+    float bonusMaxTime = 10;
+    bool bonusEnabled;
+
+
     // Update is called once per frame
     void Update()
     {
         if (sceneName == "Start") {
             return;
         }
+
+        if (bonusEnabled)
+        {
+            bonusTimer += Time.deltaTime;
+            UI.SetBonusFill((bonusMaxTime - bonusTimer) / bonusMaxTime);
+            if (bonusTimer>bonusMaxTime)
+            {
+                bonus.TurnOffBonus();
+                bonusTimer = 0;
+                bonusEnabled = false;
+                coinCounter = 0;
+                audioManager.stopBonusStage();
+            }
+        }
+
+
 
         EnergyBarAnimation();
         TestInput();
@@ -265,6 +280,8 @@ public class Player : MonoBehaviour
         HandleEnergy();
         UpdateScore(0);
         UpdateUiBars();
+
+        
         
         energy += Time.deltaTime * energyGainAmount;
         coinCooldown -= Time.deltaTime;
@@ -273,8 +290,8 @@ public class Player : MonoBehaviour
 
 
     void UpdateUiBars() {
-        healthBarFill.fillAmount = health / maxHealth;
-        energyBarFill.fillAmount = energy / maxEnergy;
+        UI.SetHealthFill(health / maxHealth);
+        UI.SetEnergyFill(energy / maxEnergy);
     }
 
 
@@ -306,8 +323,9 @@ public class Player : MonoBehaviour
                 ExitFuryMode();
             }
         }
-        punchIconBack.enabled = energy >= punchEnergy;
-        punchIcon.enabled = energy >= punchEnergy;
+
+        UI.SetPunchIcon(energy >= punchEnergy);
+        UI.SetFuryIcon(energy >= maxEnergy);
     }
 
     public void ExitFuryMode()
@@ -321,10 +339,11 @@ public class Player : MonoBehaviour
 
             dust.Pause();
             beams.Pause();
-
+            /*
             Color c = energyBarFill.color;
             c.a = 1;
             energyBarFill.color = c;
+            */
         }
     }
 
@@ -362,14 +381,19 @@ public class Player : MonoBehaviour
     {
         Debug.Log("Circle detected !");
 
-        if (energy >= maxEnergy)
+        if (coinCounter >= maxCoinsForBonus)
         {
-            energy = 0;
+            Debug.Log("Bonus mode");
+            //coinCounter = 0;
+            //UI.SetBonusFill(coinCounter / maxCoinsForBonus);
+            bonusEnabled = true;
             bonus.TurnOnBonus();
-
+            audioManager.playBonusStage();
+            /*
             Color c = energyBarFill.color;
             c.a = 1;
             energyBarFill.color = c;
+            */
         }
 
     }
@@ -392,7 +416,7 @@ public class Player : MonoBehaviour
 
         if (furyModeReady || inFuryMode)
         {
-
+            /*
             if (!increaseBarAlpha && energyBarFill.color.a >= 0)
             {
                 Color c = energyBarFill.color;
@@ -420,6 +444,7 @@ public class Player : MonoBehaviour
                 c.a = 1;
                 energyBarFill.color = c;
             }
+            */
         }
 
     }
@@ -428,7 +453,7 @@ public class Player : MonoBehaviour
     {
         speed = 0;
         gameOver = true;
-        gameOverText.enabled = true;
+        UI.SetGameOver(true);
         GameObject.Find("RunSound").GetComponent<AudioSource>().Stop();
     }
 
