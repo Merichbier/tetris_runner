@@ -73,11 +73,14 @@ public class PlaneManager : MonoBehaviour
     {
         Terrain[] terrains = Terrain.activeTerrains;
         if (terrains.Length == 0)
+        {
+            Debug.Log("No terrain found to get height");
             return defaultValue;
+        }
 
 
         var index = (int)System.Math.Floor((position.z - terrains[0].transform.position.z) / 100);
-
+        //Debug.Log("Index is : " + index);
         if (index < terrains.Length)
         {
             return terrains[index].SampleHeight(position) + PlaneManager.TERRAIN_Y_OFFSET;
