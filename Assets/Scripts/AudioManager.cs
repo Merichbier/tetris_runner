@@ -11,10 +11,7 @@ public class AudioManager : MonoBehaviour {
     {
         hit.Play();
     }
-
-
-
-
+    
     public AudioClip clip;
     AudioSource source;
 

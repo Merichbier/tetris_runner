@@ -163,6 +163,7 @@ public class Player : MonoBehaviour
         {
             if (coinCooldown <= 0)
             {
+                /*
                 if (true || !audioSource.isPlaying)
                 {
                     audioSource.Play();
@@ -172,6 +173,7 @@ public class Player : MonoBehaviour
                         audioSource.pitch = pitchStart;
                     }
                 }
+                */
                 coinCooldown = coinCooldownMax;
                 Coin coin = other.gameObject.GetComponent<Coin>();
                 UpdateScore(coin.GetPoints());
@@ -425,6 +427,7 @@ public class Player : MonoBehaviour
         speed = 0;
         gameOver = true;
         gameOverText.enabled = true;
+        GameObject.Find("RunSound").GetComponent<AudioSource>().Stop();
     }
 
 }
