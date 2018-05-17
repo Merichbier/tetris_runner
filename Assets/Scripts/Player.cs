@@ -416,6 +416,7 @@ public class Player : MonoBehaviour
     {
         speed = 0;
         gameOver = true;
+        GameObject.Find("RunningLegs").GetComponent<Animator>().enabled = false;
         UI.SetGameOver(true);
         GameObject.Find("RunSound").GetComponent<AudioSource>().Stop();
     }
