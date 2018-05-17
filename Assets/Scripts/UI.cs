@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public class UI : MonoBehaviour
 {
-
-
     static Image bonusFill;
     static Image healthFill;
     static Image energyFill;
@@ -42,56 +40,42 @@ public class UI : MonoBehaviour
     }
 
     float alpha;
+    float previousEnergyFill;
 
     void BarAnimations()
     {
+        alpha = Mathf.PingPong(Time.time, 1);
+
         Color c = energyFill.color;
         Color c2 = bonusFill.color;
 
-        alpha = Mathf.PingPong(Time.time, 1);
-
         c.a = alpha;
         c2.a = alpha;
-
-
+   
         if (energyFill.fillAmount >= 1) {
             energyFill.color = c;
         }
+        else
+        {
+            Color C = energyFill.color;
+            C.a = 1;
+            energyFill.color = C;
+        }
+        
         if (bonusFill.fillAmount >= 1)
         {
             bonusFill.color = c2;
         }
+        else
+        {
+            Color C = bonusFill.color;
+            C.a = 1;
+            bonusFill.color = C;
+        }
+
+
+        previousEnergyFill = energyFill.fillAmount;
     }
-
-    /*
-           if (!increaseBarAlpha && energyBarFill.color.a >= 0)
-           {
-               Color c = energyBarFill.color;
-               c.a -= Time.deltaTime;
-               energyBarFill.color = c;
-           }
-           else if (increaseBarAlpha && energyBarFill.color.a <= 1)
-           {
-               Color c = energyBarFill.color;
-               c.a += Time.deltaTime;
-               energyBarFill.color = c;
-           }
-
-           if (energyBarFill.color.a <= 0)
-           {
-               increaseBarAlpha = true;
-               Color c = energyBarFill.color;
-               c.a = 0;
-               energyBarFill.color = c;
-           }
-           else if (energyBarFill.color.a >= 1)
-           {
-               increaseBarAlpha = false;
-               Color c = energyBarFill.color;
-               c.a = 1;
-               energyBarFill.color = c;
-           }
-           */
 
     Image GetImage(string s)
     {
