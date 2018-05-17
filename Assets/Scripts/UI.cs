@@ -38,7 +38,60 @@ public class UI : MonoBehaviour
         healthFill.fillAmount = Mathf.Lerp(healthFill.fillAmount, healthAmount, Time.deltaTime * lerpSpeed);
         energyFill.fillAmount = Mathf.Lerp(energyFill.fillAmount, energyAmount, Time.deltaTime * lerpSpeed);
         bonusFill.fillAmount = Mathf.Lerp(bonusFill.fillAmount, bonusAmount, Time.deltaTime * lerpSpeed);
+        BarAnimations();
     }
+
+    float alpha;
+
+    void BarAnimations()
+    {
+        Color c = energyFill.color;
+        Color c2 = bonusFill.color;
+
+        alpha = Mathf.PingPong(Time.time, 1);
+
+        c.a = alpha;
+        c2.a = alpha;
+
+
+        if (energyFill.fillAmount >= 1) {
+            energyFill.color = c;
+        }
+        if (bonusFill.fillAmount >= 1)
+        {
+            bonusFill.color = c2;
+        }
+    }
+
+    /*
+           if (!increaseBarAlpha && energyBarFill.color.a >= 0)
+           {
+               Color c = energyBarFill.color;
+               c.a -= Time.deltaTime;
+               energyBarFill.color = c;
+           }
+           else if (increaseBarAlpha && energyBarFill.color.a <= 1)
+           {
+               Color c = energyBarFill.color;
+               c.a += Time.deltaTime;
+               energyBarFill.color = c;
+           }
+
+           if (energyBarFill.color.a <= 0)
+           {
+               increaseBarAlpha = true;
+               Color c = energyBarFill.color;
+               c.a = 0;
+               energyBarFill.color = c;
+           }
+           else if (energyBarFill.color.a >= 1)
+           {
+               increaseBarAlpha = false;
+               Color c = energyBarFill.color;
+               c.a = 1;
+               energyBarFill.color = c;
+           }
+           */
 
     Image GetImage(string s)
     {

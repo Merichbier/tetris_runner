@@ -271,12 +271,6 @@ public class Player : MonoBehaviour
         }
 
 
-        //appearingWall.transform.position = Vector3.Slerp(appearingWall.transform.position, finalPosition, APPEARING_SPEED);
- 
-
-
-
-        EnergyBarAnimation();
         TestInput();
         
         PlayerAlive();
@@ -416,45 +410,6 @@ public class Player : MonoBehaviour
                 healthLossCooldown = 0;
             }
         }
-    }
-
-    void EnergyBarAnimation()
-    {
-        furyModeReady = energy >= maxEnergy;
-
-        if (furyModeReady || inFuryMode)
-        {
-            /*
-            if (!increaseBarAlpha && energyBarFill.color.a >= 0)
-            {
-                Color c = energyBarFill.color;
-                c.a -= Time.deltaTime;
-                energyBarFill.color = c;
-            }
-            else if (increaseBarAlpha && energyBarFill.color.a <= 1)
-            {
-                Color c = energyBarFill.color;
-                c.a += Time.deltaTime;
-                energyBarFill.color = c;
-            }
-
-            if (energyBarFill.color.a <= 0)
-            {
-                increaseBarAlpha = true;
-                Color c = energyBarFill.color;
-                c.a = 0;
-                energyBarFill.color = c;
-            }
-            else if (energyBarFill.color.a >= 1)
-            {
-                increaseBarAlpha = false;
-                Color c = energyBarFill.color;
-                c.a = 1;
-                energyBarFill.color = c;
-            }
-            */
-        }
-
     }
 
     void Die()
