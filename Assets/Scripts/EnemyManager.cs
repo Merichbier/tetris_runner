@@ -108,7 +108,7 @@ public class EnemyManager : MonoBehaviour
         enemy.transform.LookAt(playerXZPos);
 
         var target = player;
-        target.z += 13f;
+        target.z += 17f;
         // Kinematic formula
         float R = Vector3.Distance(enemy.transform.position, target);
         float G = Physics.gravity.y;
