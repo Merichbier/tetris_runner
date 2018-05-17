@@ -16,7 +16,7 @@ public class MoveCamera : MonoBehaviour
     void Start()
     {
         var rot = transform.rotation;
-        //rot.x = 15f;
+        rot.x = (float) Math.PI/12f;
         transform.rotation = rot;
     }
 
@@ -45,14 +45,16 @@ public class MoveCamera : MonoBehaviour
         {
             kinectManager = KinectManager.Instance;
         }
-        if (kinectManager == null)
-            return;
-        // Get the position of the body and store it.
-        Vector3 trans = kinectManager.GetUserPosition(kinectManager.Player1);
+        if (kinectManager != null)
+        {
+            // Get the position of the body and store it.
+            Vector3 trans = kinectManager.GetUserPosition(kinectManager.Player1);
 
-        // Change camera position according to 
-        //Debug.Log(string.Format("From : {0} -> {1})", transform.position.x, trans.x));
-        transform.position = new Vector3(trans.x, transform.position.y, transform.position.z);
+            // Change camera position according to 
+            //Debug.Log(string.Format("From : {0} -> {1})", transform.position.x, trans.x));
+            transform.position = new Vector3(trans.x, transform.position.y, transform.position.z);
+        }
+
         transform.LookAt(new Vector3(target.position.x, target.position.y, target.position.z + OFFSET_LOOK_AT));
     }
 }
