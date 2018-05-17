@@ -5,7 +5,7 @@ using UnityEngine;
 public class Coin : MonoBehaviour {
 
     float rotationSpeed = 50;
-    float points = 10;
+    float points;
     int totalCoins;
     bool pickedUp;
     //Transform player;
@@ -16,6 +16,7 @@ public class Coin : MonoBehaviour {
 	void Start () {
         orgPos = transform.position;
         meter = GameObject.Find("CoinTarget");
+        points = 10;
     }
 
     public float GetPoints()

@@ -23,7 +23,7 @@ public class CoinSpawner : MonoBehaviour {
     int coinZCounter;
 
     public Material coinMaterial;
-    int coinScore;
+    int coinScore=10;
 
     GameObject coinParent;
 

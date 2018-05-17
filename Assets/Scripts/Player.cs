@@ -79,6 +79,9 @@ public class Player : MonoBehaviour
         health = maxHealth;
         snowballExplode = GameObject.Find("SnowballExplode").GetComponent<ParticleSystem>();
 
+        //energy = maxEnergy;
+        //coinCounter = maxCoinsForBonus;
+        
         sceneName = SceneManager.GetActiveScene().name;
         if (sceneName != "Start") { 
                      
@@ -142,15 +145,9 @@ public class Player : MonoBehaviour
         }
     }
 
-    //arsalan branch
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Wall_Hole")
-        {
-            UpdateScore(wallPoints, true);
-            Destroy(other.gameObject);
-        }
-        else if (other.gameObject.tag == "Coin")
+        if (other.gameObject.tag == "Coin")
         {
             if (coinCooldown <= 0)
             {
@@ -233,7 +230,7 @@ public class Player : MonoBehaviour
                 force.y = 1;
                 r.AddRelativeForce(force);
             }
-            distScore = (int)Math.Floor(Vector3.Distance(transform.position, startPosition));
+            distScore = (int)Math.Floor(Vector3.Distance(transform.position, startPosition)/3);
         }
         else
         {
