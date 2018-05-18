@@ -16,7 +16,7 @@ public class MoveCamera : MonoBehaviour
     void Start()
     {
         var rot = transform.rotation;
-        rot.x = (float) Math.PI/12f;
+        rot.x = (float)Math.PI / 12f;
         transform.rotation = rot;
     }
 
@@ -52,7 +52,7 @@ public class MoveCamera : MonoBehaviour
 
             // Change camera position according to 
             //Debug.Log(string.Format("From : {0} -> {1})", transform.position.x, trans.x));
-            transform.position = new Vector3(trans.x, transform.position.y, transform.position.z);
+            transform.position = new Vector3(trans.x*1.25f, transform.position.y, transform.position.z);
         }
 
         transform.LookAt(new Vector3(target.position.x, target.position.y, target.position.z + OFFSET_LOOK_AT));

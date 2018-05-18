@@ -8,6 +8,7 @@ public class EnemyManager : MonoBehaviour
     private static float MAX_X = 5f;
     private static float SPEED_SNOWBALL = 15f;
     private static float DESTROY_DISTANCE = 5f;
+    private static float TARGET_OFFSET = 18f;
 
     public GameObject[] enemyPrefabs;
     private GameObject currentEnemy;
@@ -48,7 +49,7 @@ public class EnemyManager : MonoBehaviour
         for (int i = enemies.Count - 1; i >= 0; i--)
         {
             GameObject enemy = enemies[i];
-            if (player.z > enemy.transform.position.z + PlaneManager.THRESHOLD || enemy.transform.position.y < 0)
+            if (player.z > enemy.transform.position.z + PlaneManager.THRESHOLD)
             {
                 enemies.Remove(enemy);
                 Destroy(enemy);
@@ -69,19 +70,19 @@ public class EnemyManager : MonoBehaviour
             return;
         }
 
-        GameObject firstEnemy = enemies[0];
-        if (Vector3.Distance(firstEnemy.transform.position, position) < DESTROY_DISTANCE)
+        GameObject lastEnemy = enemies[enemies.Count-1];
+        if (Vector3.Distance(lastEnemy.transform.position, position) < DESTROY_DISTANCE)
         {
-            enemies.Remove(firstEnemy);
+            enemies.Remove(lastEnemy);
             currentEnemy = null;
             // Put it away
-            var rb = firstEnemy.GetComponent<Rigidbody>();
+            var rb = lastEnemy.GetComponent<Rigidbody>();
             rb.velocity = InverseHorizontalDirection(rb.velocity);
             Debug.Log("Enemy pushed away !");
         }
         else
         {
-            Debug.Log("Distance was : " + Vector3.Distance(firstEnemy.transform.position, position));
+            Debug.Log("Distance was : " + Vector3.Distance(lastEnemy.transform.position, position));
         }
     }
 
@@ -108,7 +109,7 @@ public class EnemyManager : MonoBehaviour
         enemy.transform.LookAt(playerXZPos);
 
         var target = player;
-        target.z += 17f;
+        target.z += TARGET_OFFSET;
         // Kinematic formula
         float R = Vector3.Distance(enemy.transform.position, target);
         float G = Physics.gravity.y;

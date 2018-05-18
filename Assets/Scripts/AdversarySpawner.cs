@@ -24,6 +24,7 @@ public class AdversarySpawner : MonoBehaviour
     private IEnumerator showAdversary()
     {
         var player = GameObject.Find("Player").GetComponent<Player>();
+        yield return new WaitForSeconds(10f);
         while (!player.gameOver)
         {
             yield return new WaitForSeconds(SPAWN_TIME);

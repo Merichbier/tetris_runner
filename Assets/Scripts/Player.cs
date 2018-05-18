@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class Player : MonoBehaviour
 {   
     float health;
-    float maxHealth=10;
+    float maxHealth=20;
 
     float energy;
     float maxEnergy=100;
